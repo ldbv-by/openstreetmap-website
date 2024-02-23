@@ -34,8 +34,8 @@ class TileNodes < ActiveRecord::Migration[4.2]
 
     create_table "current_nodes", :id => false do |t|
       t.column "id",        :bigserial, :primary_key => true, :null => false
-      t.column "latitude",  :integer, :null => false
-      t.column "longitude", :integer, :null => false
+      t.column "latitude",  :bigint, :null => false
+      t.column "longitude", :bigint, :null => false
       t.column "user_id",   :bigint, :null => false
       t.column "visible",   :boolean, :null => false
       t.column "tags",      :text, :default => "", :null => false
@@ -58,8 +58,8 @@ class TileNodes < ActiveRecord::Migration[4.2]
 
     create_table "nodes", :id => false do |t|
       t.column "id",        :bigint, :null => false
-      t.column "latitude",  :integer, :null => false
-      t.column "longitude", :integer, :null => false
+      t.column "latitude",  :bigint, :null => false
+      t.column "longitude", :bigint, :null => false
       t.column "user_id",   :bigint, :null => false
       t.column "visible",   :boolean, :null => false
       t.column "tags",      :text, :default => "", :null => false

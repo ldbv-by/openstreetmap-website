@@ -3,8 +3,8 @@ class AddMapBugTables < ActiveRecord::Migration[4.2]
     create_enumeration :map_bug_status_enum, %w[open closed hidden]
 
     create_table :map_bugs do |t|
-      t.integer :latitude, :null => false
-      t.integer :longitude, :null => false
+      t.column :latitude, :bigint, :null => false
+      t.column :longitude, :bigint, :null => false
       t.column :tile, :bigint, :null => false
       t.datetime :last_changed, :null => false
       t.datetime :date_created, :null => false

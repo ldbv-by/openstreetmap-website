@@ -40,8 +40,8 @@ class CleanupOsmDb < ActiveRecord::Migration[4.2]
     remove_column "gps_points", "user_id"
     add_index "gps_points", %w[latitude longitude], :name => "points_idx"
     change_column "gps_points", "trackid", :integer, :null => false
-    change_column "gps_points", "latitude", :integer, :null => false
-    change_column "gps_points", "longitude", :integer, :null => false
+    change_column "gps_points", "latitude", :bigint, :null => false
+    change_column "gps_points", "longitude", :bigint, :null => false
     change_column "gps_points", "gpx_id", :bigint, :null => false
 
     change_column "gpx_file_tags", "tag", :string, :null => false
@@ -177,8 +177,8 @@ class CleanupOsmDb < ActiveRecord::Migration[4.2]
     change_column "gpx_file_tags", "tag", :string, :default => nil
 
     change_column "gps_points", "gpx_id", :integer
-    change_column "gps_points", "longitude", :integer
-    change_column "gps_points", "latitude", :integer
+    change_column "gps_points", "longitude", :bigint
+    change_column "gps_points", "latitude", :bigint
     change_column "gps_points", "trackid", :integer
     add_column "gps_points", "user_id", :integer
     add_index "gps_points", ["user_id"], :name => "points_uid_idx"

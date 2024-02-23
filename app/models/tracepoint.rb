@@ -4,8 +4,8 @@
 #
 #  altitude  :float
 #  trackid   :integer          not null
-#  latitude  :integer          not null
-#  longitude :integer          not null
+#  latitude  :bigint(8)        not null
+#  longitude :bigint(8)        not null
 #  gpx_id    :bigint(8)        not null
 #  timestamp :datetime
 #  tile      :bigint(8)
@@ -26,7 +26,7 @@ class Tracepoint < ApplicationRecord
   self.table_name = "gps_points"
 
   validates :trackid, :numericality => { :only_integer => true }
-  validates :latitude, :longitude, :numericality => { :only_integer => true }
+  #validates :latitude, :longitude, :numericality => { :only_integer => true }
   validates :trace, :associated => true
   validates :timestamp, :presence => true
 

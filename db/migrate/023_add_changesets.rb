@@ -7,10 +7,10 @@ class AddChangesets < ActiveRecord::Migration[4.2]
       t.column "user_id",        :bigint, :null => false
       t.column "created_at",     :datetime, :null => false
       t.column "open",           :boolean, :null => false, :default => true
-      t.column "min_lat",        :integer, :null => true
-      t.column "max_lat",        :integer, :null => true
-      t.column "min_lon",        :integer, :null => true
-      t.column "max_lon",        :integer, :null => true
+      t.column "min_lat",        :bigint, :null => true
+      t.column "max_lat",        :bigint, :null => true
+      t.column "min_lon",        :bigint, :null => true
+      t.column "max_lon",        :bigint, :null => true
     end
 
     create_table "changeset_tags", :id => false do |t|

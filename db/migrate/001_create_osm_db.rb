@@ -74,8 +74,8 @@ class CreateOsmDb < ActiveRecord::Migration[4.2]
       t.column "altitude",  :float
       t.column "user_id",   :integer
       t.column "trackid",   :integer
-      t.column "latitude",  :integer
-      t.column "longitude", :integer
+      t.column "latitude",  :bigint
+      t.column "longitude", :bigint
       t.column "gpx_id",    :integer
       t.column "timestamp", :datetime
     end

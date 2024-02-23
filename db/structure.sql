@@ -308,10 +308,10 @@ CREATE TABLE public.changesets (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    min_lat integer,
-    max_lat integer,
-    min_lon integer,
-    max_lon integer,
+    min_lat bigint,
+    max_lat bigint,
+    min_lon bigint,
+    max_lon bigint,
     closed_at timestamp without time zone NOT NULL,
     num_changes integer DEFAULT 0 NOT NULL
 );
@@ -408,8 +408,8 @@ CREATE TABLE public.current_node_tags (
 
 CREATE TABLE public.current_nodes (
     id bigint NOT NULL,
-    latitude integer NOT NULL,
-    longitude integer NOT NULL,
+    latitude bigint NOT NULL,
+    longitude bigint NOT NULL,
     changeset_id bigint NOT NULL,
     visible boolean NOT NULL,
     "timestamp" timestamp without time zone NOT NULL,
@@ -707,8 +707,8 @@ ALTER SEQUENCE public.friends_id_seq OWNED BY public.friends.id;
 CREATE TABLE public.gps_points (
     altitude double precision,
     trackid integer NOT NULL,
-    latitude integer NOT NULL,
-    longitude integer NOT NULL,
+    latitude bigint NOT NULL,
+    longitude bigint NOT NULL,
     gpx_id bigint NOT NULL,
     "timestamp" timestamp without time zone,
     tile bigint
