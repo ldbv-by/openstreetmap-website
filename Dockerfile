@@ -7,7 +7,7 @@ RUN apt-get update \
  && apt-get install --no-install-recommends -y \
       build-essential \
       curl \
-      default-jre-headless \
+      openjdk-17-jre-headless \
       file \
       git-core \
       gpg-agent \
