@@ -17,7 +17,7 @@ module GeoRecord
   # This scaling factor is used to convert between the float lat/lon that is
   # returned by the API, and the integer lat/lon equivalent that is stored in
   # the database.
-  SCALE = 10000000
+  SCALE = 10000000000
 
   included do
     scope :bbox, ->(bbox) { where(OSM.sql_for_area(bbox, "#{table_name}.")) }
