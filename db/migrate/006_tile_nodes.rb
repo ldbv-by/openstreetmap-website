@@ -10,7 +10,7 @@ class TileNodes < ActiveRecord::Migration[4.2]
   def self.upgrade_table(from_table, to_table, model)
     execute <<-SQL.squish
     INSERT INTO #{to_table} (id, latitude, longitude, user_id, visible, tags, timestamp, tile)
-    SELECT id, ROUND(latitude * 10000000), ROUND(longitude * 10000000),
+    SELECT id, ROUND(latitude * 10000000000), ROUND(longitude * 10000000000),
             user_id, visible, tags, timestamp, 0
     FROM #{from_table}
     SQL
@@ -21,7 +21,7 @@ class TileNodes < ActiveRecord::Migration[4.2]
   def self.downgrade_table(from_table, to_table)
     execute <<-SQL.squish
     INSERT INTO #{to_table} (id, latitude, longitude, user_id, visible, tags, timestamp)
-    SELECT id, latitude / 10000000, longitude / 10000000,
+    SELECT id, latitude / 10000000000, longitude / 10000000000,
            user_id, visible, tags, timestamp
     FROM #{from_table}
     SQL

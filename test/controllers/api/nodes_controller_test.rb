@@ -79,8 +79,8 @@ module Api
       checknode = Node.find(nodeid)
       assert_not_nil checknode, "uploaded node not found in data base after upload"
       # compare values
-      assert_in_delta lat * 10000000, checknode.latitude, 1, "saved node does not match requested latitude"
-      assert_in_delta lon * 10000000, checknode.longitude, 1, "saved node does not match requested longitude"
+      assert_in_delta lat * 10000000000, checknode.latitude, 1, "saved node does not match requested latitude"
+      assert_in_delta lon * 10000000000, checknode.longitude, 1, "saved node does not match requested longitude"
       assert_equal changeset.id, checknode.changeset_id, "saved node does not belong to changeset that it was created in"
       assert checknode.visible, "saved node is not visible"
     end

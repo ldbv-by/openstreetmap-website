@@ -1828,10 +1828,10 @@ module Api
       # get the bounding box back from the changeset
       get changeset_show_path(:id => changeset_id)
       assert_response :success, "Couldn't read back changeset."
-      assert_select "osm>changeset[min_lon='1.0000000']", 1
-      assert_select "osm>changeset[max_lon='1.0000000']", 1
-      assert_select "osm>changeset[min_lat='2.0000000']", 1
-      assert_select "osm>changeset[max_lat='2.0000000']", 1
+      assert_select "osm>changeset[min_lon='1.0000000000']", 1
+      assert_select "osm>changeset[max_lon='1.0000000000']", 1
+      assert_select "osm>changeset[min_lat='2.0000000000']", 1
+      assert_select "osm>changeset[max_lat='2.0000000000']", 1
 
       # add another node to it
       with_controller(NodesController.new) do
@@ -1843,10 +1843,10 @@ module Api
       # get the bounding box back from the changeset
       get changeset_show_path(:id => changeset_id)
       assert_response :success, "Couldn't read back changeset for the second time."
-      assert_select "osm>changeset[min_lon='1.0000000']", 1
-      assert_select "osm>changeset[max_lon='2.0000000']", 1
-      assert_select "osm>changeset[min_lat='1.0000000']", 1
-      assert_select "osm>changeset[max_lat='2.0000000']", 1
+      assert_select "osm>changeset[min_lon='1.0000000000']", 1
+      assert_select "osm>changeset[max_lon='2.0000000000']", 1
+      assert_select "osm>changeset[min_lat='1.0000000000']", 1
+      assert_select "osm>changeset[max_lat='2.0000000000']", 1
 
       # add (delete) a way to it, which contains a point at (3,3)
       with_controller(WaysController.new) do
@@ -1858,10 +1858,10 @@ module Api
       # get the bounding box back from the changeset
       get changeset_show_path(:id => changeset_id)
       assert_response :success, "Couldn't read back changeset for the third time."
-      assert_select "osm>changeset[min_lon='1.0000000']", 1
-      assert_select "osm>changeset[max_lon='3.0000000']", 1
-      assert_select "osm>changeset[min_lat='1.0000000']", 1
-      assert_select "osm>changeset[max_lat='3.0000000']", 1
+      assert_select "osm>changeset[min_lon='1.0000000000']", 1
+      assert_select "osm>changeset[max_lon='3.0000000000']", 1
+      assert_select "osm>changeset[min_lat='1.0000000000']", 1
+      assert_select "osm>changeset[max_lat='3.0000000000']", 1
     end
 
     ##

@@ -6,11 +6,11 @@ module GeoRecord
   # Unfortunately you can't extend Numeric classes directly (e.g. `Coord < Float`).
   class Coord < DelegateClass(Float)
     def to_s
-      format("%<coord>.7f", :coord => self)
+      format("%<coord>.10f", :coord => self)
     end
 
     def as_json(*)
-      format("%<coord>.7f", :coord => self).to_f
+      format("%<coord>.10f", :coord => self).to_f
     end
   end
 

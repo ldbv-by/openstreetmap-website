@@ -247,10 +247,10 @@ class Trace < ApplicationRecord
         max_lon = Tracepoint.where(:trace => id).maximum(:longitude)
         min_lon = Tracepoint.where(:trace => id).minimum(:longitude)
 
-        max_lat = max_lat.to_f / 10000000
-        min_lat = min_lat.to_f / 10000000
-        max_lon = max_lon.to_f / 10000000
-        min_lon = min_lon.to_f / 10000000
+        max_lat = max_lat.to_f / 10000000000
+        min_lat = min_lat.to_f / 10000000000
+        max_lon = max_lon.to_f / 10000000000
+        min_lon = min_lon.to_f / 10000000000
 
         self.latitude = f_lat
         self.longitude = f_lon

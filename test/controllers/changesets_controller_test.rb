@@ -75,7 +75,7 @@ class ChangesetsControllerTest < ActionDispatch::IntegrationTest
   ##
   # This should display the last 20 changesets closed in a specific area
   def test_index_bbox
-    changesets = create_list(:changeset, 10, :num_changes => 1, :min_lat => 50000000, :max_lat => 50000001, :min_lon => 50000000, :max_lon => 50000001)
+    changesets = create_list(:changeset, 10, :num_changes => 1, :min_lat => 50000000000, :max_lat => 50000000001, :min_lon => 50000000000, :max_lon => 50000000001)
     other_changesets = create_list(:changeset, 10, :num_changes => 1, :min_lat => 0, :max_lat => 1, :min_lon => 0, :max_lon => 1)
 
     # First check they all show up without a bbox parameter

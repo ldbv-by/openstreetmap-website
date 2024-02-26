@@ -131,13 +131,13 @@ module Api
       end
       assert_response :success, "Expected success with the map call"
       assert_select "osm[version='#{Settings.api_version}'][generator='#{Settings.generator}']", :count => 1 do
-        assert_select "bounds[minlon='#{format('%<lon>.7f', :lon => minlon)}']" \
-                      "[minlat='#{format('%<lat>.7f', :lat => minlat)}']" \
-                      "[maxlon='#{format('%<lon>.7f', :lon => maxlon)}']" \
-                      "[maxlat='#{format('%<lat>.7f', :lat => maxlat)}']", :count => 1
+        assert_select "bounds[minlon='#{format('%<lon>.10f', :lon => minlon)}']" \
+                      "[minlat='#{format('%<lat>.10f', :lat => minlat)}']" \
+                      "[maxlon='#{format('%<lon>.10f', :lon => maxlon)}']" \
+                      "[maxlat='#{format('%<lat>.10f', :lat => maxlat)}']", :count => 1
         assert_select "node[id='#{node.id}']" \
-                      "[lat='#{format('%<lat>.7f', :lat => node.lat)}']" \
-                      "[lon='#{format('%<lon>.7f', :lon => node.lon)}']" \
+                      "[lat='#{format('%<lat>.10f', :lat => node.lat)}']" \
+                      "[lon='#{format('%<lon>.10f', :lon => node.lon)}']" \
                       "[version='#{node.version}']" \
                       "[changeset='#{node.changeset_id}']" \
                       "[visible='#{node.visible}']" \
@@ -219,8 +219,8 @@ module Api
                       "[maxlon='#{node.lon}']" \
                       "[maxlat='#{node.lat}']", :count => 1
         assert_select "node[id='#{node.id}']" \
-                      "[lat='#{format('%<lat>.7f', :lat => node.lat)}']" \
-                      "[lon='#{format('%<lon>.7f', :lon => node.lon)}']" \
+                      "[lat='#{format('%<lat>.10f', :lat => node.lat)}']" \
+                      "[lon='#{format('%<lon>.10f', :lon => node.lon)}']" \
                       "[version='#{node.version}']" \
                       "[changeset='#{node.changeset_id}']" \
                       "[visible='#{node.visible}']" \
