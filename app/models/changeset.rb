@@ -2,23 +2,33 @@
 #
 # Table name: changesets
 #
-#  id          :bigint(8)        not null, primary key
-#  user_id     :bigint(8)        not null
-#  created_at  :datetime         not null
-#  min_lat     :integer
-#  max_lat     :integer
-#  min_lon     :integer
-#  max_lon     :integer
-#  closed_at   :datetime         not null
-#  num_changes :integer          default(0), not null
+#  id                     :bigint           not null, primary key
+#  user_id                :bigint           not null
+#  created_at             :datetime         not null
+#  min_lat                :integer
+#  max_lat                :integer
+#  min_lon                :integer
+#  max_lon                :integer
+#  closed_at              :datetime         not null
+#  num_changes            :integer          default(0), not null
+#  num_created_nodes      :integer          default(0), not null
+#  num_modified_nodes     :integer          default(0), not null
+#  num_deleted_nodes      :integer          default(0), not null
+#  num_created_ways       :integer          default(0), not null
+#  num_modified_ways      :integer          default(0), not null
+#  num_deleted_ways       :integer          default(0), not null
+#  num_created_relations  :integer          default(0), not null
+#  num_modified_relations :integer          default(0), not null
+#  num_deleted_relations  :integer          default(0), not null
 #
 # Indexes
 #
-#  changesets_bbox_idx                (min_lat,max_lat,min_lon,max_lon) USING gist
-#  changesets_closed_at_idx           (closed_at)
-#  changesets_created_at_idx          (created_at)
-#  changesets_user_id_created_at_idx  (user_id,created_at)
-#  changesets_user_id_id_idx          (user_id,id)
+#  changesets_bbox_idx                        (min_lat,max_lat,min_lon,max_lon) USING gist
+#  changesets_closed_at_idx                   (closed_at)
+#  changesets_created_at_idx                  (created_at)
+#  changesets_user_id_created_at_idx          (user_id,created_at)
+#  changesets_user_id_id_idx                  (user_id,id)
+#  index_changesets_on_user_id_and_closed_at  (user_id,closed_at)
 #
 # Foreign Keys
 #
@@ -40,13 +50,19 @@ class Changeset < ApplicationRecord
   has_many :old_relations
 
   has_many :comments, -> { where(:visible => true).order(:created_at) }, :class_name => "ChangesetComment"
-  has_and_belongs_to_many :subscribers, :class_name => "User", :join_table => "changesets_subscribers", :association_foreign_key => "subscriber_id"
+  has_many :subscriptions, :class_name => "ChangesetSubscription"
+  has_many :subscribers, :through => :subscriptions
 
   validates :id, :uniqueness => true, :presence => { :on => :update },
                  :numericality => { :on => :update, :only_integer => true }
-  validates :num_changes, :presence => true,
-                          :numericality => { :only_integer => true,
-                                             :greater_than_or_equal_to => 0 }
+  [:num_changes,
+   :num_created_nodes, :num_modified_nodes, :num_deleted_nodes,
+   :num_created_ways, :num_modified_ways, :num_deleted_ways,
+   :num_created_relations, :num_modified_relations, :num_deleted_relations].each do |counter_attribute|
+    validates counter_attribute, :presence => true,
+                                 :numericality => { :only_integer => true,
+                                                    :greater_than_or_equal_to => 0 }
+  end
   validates :created_at, :closed_at, :presence => true
   validates :min_lat, :max_lat, :min_lon, :max_lat, :allow_nil => true,
                                                     :numericality => { :only_integer => true }
@@ -71,7 +87,7 @@ class Changeset < ApplicationRecord
     # note that this may not be a hard limit - due to timing changes and
     # concurrency it is possible that some changesets may be slightly
     # longer than strictly allowed or have slightly more changes in them.
-    ((closed_at > Time.now.utc) && (num_changes <= MAX_ELEMENTS))
+    (closed_at > Time.now.utc) && (num_changes <= MAX_ELEMENTS)
   end
 
   def set_closed_time_now
@@ -128,6 +144,8 @@ class Changeset < ApplicationRecord
   # expand the bounding box to include the given bounding box.
   def update_bbox!(bbox_update)
     bbox.expand!(bbox_update)
+
+    raise OSM::APISizeLimitExceeded if bbox.linear_size > size_limit
 
     # update active record. rails 2.1's dirty handling should take care of
     # whether this object needs saving or not.
@@ -212,4 +230,26 @@ class Changeset < ApplicationRecord
 
     save_with_tags!
   end
+
+  def size_limit
+    @size_limit ||= ActiveRecord::Base.connection.select_value(
+      "SELECT api_size_limit($1)", "api_size_limit", [user_id]
+    )
+  end
+
+  def num_created_elements = num_created_nodes + num_created_ways + num_created_relations
+  def num_modified_elements = num_modified_nodes + num_modified_ways + num_modified_relations
+  def num_deleted_elements = num_deleted_nodes + num_deleted_ways + num_deleted_relations
+
+  def num_changed_nodes = num_created_nodes + num_modified_nodes + num_deleted_nodes
+  def num_changed_ways = num_created_ways + num_modified_ways + num_deleted_ways
+  def num_changed_relations = num_created_relations + num_modified_relations + num_deleted_relations
+
+  def num_type_changes_in_sync?
+    num_changes == num_created_elements + num_modified_elements + num_deleted_elements
+  end
+
+  def actual_num_changed_nodes = num_type_changes_in_sync? ? num_changed_nodes : old_nodes.count
+  def actual_num_changed_ways = num_type_changes_in_sync? ? num_changed_ways : old_ways.count
+  def actual_num_changed_relations = num_type_changes_in_sync? ? num_changed_relations : old_relations.count
 end

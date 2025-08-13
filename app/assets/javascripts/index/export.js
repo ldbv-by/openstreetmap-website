@@ -1,7 +1,9 @@
-OSM.Export = function (map) {
-  var page = {};
+//= require download_util
 
-  var locationFilter = new L.LocationFilter({
+OSM.Export = function (map) {
+  const page = {};
+
+  const locationFilter = new L.LocationFilter({
     enableButton: false,
     adjustButton: false
   }).on("change", update);
@@ -13,7 +15,7 @@ OSM.Export = function (map) {
   }
 
   function boundsChanged() {
-    var bounds = getBounds();
+    const bounds = getBounds();
     map.fitBounds(bounds);
     locationFilter.setBounds(bounds);
     locationFilter.enable();
@@ -36,16 +38,16 @@ OSM.Export = function (map) {
   }
 
   function setBounds(bounds) {
-    var precision = OSM.zoomPrecision(map.getZoom());
-    $("#minlon").val(bounds.getWest().toFixed(precision));
-    $("#minlat").val(bounds.getSouth().toFixed(precision));
-    $("#maxlon").val(bounds.getEast().toFixed(precision));
-    $("#maxlat").val(bounds.getNorth().toFixed(precision));
+    const truncated = [bounds.getSouthWest(), bounds.getNorthEast()]
+      .map(c => OSM.cropLocation(c, map.getZoom()));
+    $("#minlon").val(truncated[0][1]);
+    $("#minlat").val(truncated[0][0]);
+    $("#maxlon").val(truncated[1][1]);
+    $("#maxlat").val(truncated[1][0]);
 
     $("#export_overpass").attr("href",
                                "https://overpass-api.de/api/map?bbox=" +
-                               $("#minlon").val() + "," + $("#minlat").val() + "," +
-                               $("#maxlon").val() + "," + $("#maxlat").val());
+                               truncated.map(p => p.reverse()).join());
   }
 
   function validateControls() {
@@ -58,7 +60,6 @@ OSM.Export = function (map) {
   }
 
   page.pushstate = page.popstate = function (path) {
-    $("#export_tab").addClass("current");
     OSM.loadSidebarContent(path, page.load);
   };
 
@@ -71,6 +72,17 @@ OSM.Export = function (map) {
     $("#drag_box").click(enableFilter);
     $(".export_form").on("submit", checkSubmit);
 
+    document.querySelector(".export_form")
+      .addEventListener("turbo:submit-end", OSM.getTurboBlobHandler("map.osm"));
+
+    document.querySelector(".export_form")
+      .addEventListener("turbo:before-fetch-response", OSM.turboHtmlResponseHandler);
+
+    document.querySelector(".export_form")
+      .addEventListener("turbo:before-fetch-request", function (event) {
+        event.detail.fetchOptions.headers.Accept = "application/xml";
+      });
+
     update();
     return map.getState();
   };
@@ -79,8 +91,6 @@ OSM.Export = function (map) {
     map
       .removeLayer(locationFilter)
       .off("moveend", update);
-
-    $("#export_tab").removeClass("current");
   };
 
   return page;

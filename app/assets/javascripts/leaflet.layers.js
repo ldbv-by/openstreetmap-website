@@ -1,31 +1,23 @@
 L.OSM.layers = function (options) {
-  var control = L.OSM.sidebarPane(options, "layers", "javascripts.map.layers.title", "javascripts.map.layers.header");
+  const control = L.OSM.sidebarPane(options, "layers", "javascripts.map.layers.title", "javascripts.map.layers.header");
 
   control.onAddPane = function (map, button, $ui, toggle) {
-    var layers = options.layers;
+    const layers = options.layers;
 
-    var baseSection = $("<div>")
-      .attr("class", "section base-layers")
-      .appendTo($ui);
+    control.onContentLoaded = function () {
+      $ui.find(".base-layers>div").each(initBaseLayer);
+      initOverlays();
+    };
+    control.loadContent();
 
-    var baseLayers = $("<ul class='list-unstyled mb-0'>")
-      .appendTo(baseSection);
-
-    layers.forEach(function (layer) {
-      var item = $("<li>")
-        .attr("class", "rounded-3")
-        .appendTo(baseLayers);
-
-      if (map.hasLayer(layer)) {
-        item.addClass("active");
-      }
-
-      var div = $("<div>")
-        .appendTo(item);
+    function initBaseLayer() {
+      const [container, input, item] = this.children;
+      const layer = layers.find(l => l.options.layerId === container.dataset.layer);
+      input.checked = map.hasLayer(layer);
 
       map.whenReady(function () {
-        var miniMap = L.map(div[0], { attributionControl: false, zoomControl: false, keyboard: false })
-          .addLayer(new layer.constructor({ apikey: layer.options.apikey }));
+        const miniMap = L.map(container, { attributionControl: false, zoomControl: false, keyboard: false })
+          .addLayer(new layer.constructor(layer.options));
 
         miniMap.dragging.disable();
         miniMap.touchZoom.disable();
@@ -55,108 +47,64 @@ L.OSM.layers = function (options) {
         }
       });
 
-      var label = $("<label>")
-        .appendTo(item);
-
-      var input = $("<input>")
-        .attr("type", "radio")
-        .prop("checked", map.hasLayer(layer))
-        .appendTo(label);
-
-      label.append(layer.options.name);
-
-      item.on("click", function () {
-        layers.forEach(function (other) {
-          if (other === layer) {
-            map.addLayer(other);
-          } else {
+      $(input).on("click", function () {
+        for (const other of layers) {
+          if (other !== layer) {
             map.removeLayer(other);
           }
-        });
-        map.fire("baselayerchange", { layer: layer });
-      });
-
-      item.on("dblclick", toggle);
-
-      map.on("layeradd layerremove", function () {
-        item.toggleClass("active", map.hasLayer(layer));
-        input.prop("checked", map.hasLayer(layer));
-      });
-    });
-
-    if (OSM.STATUS !== "api_offline" && OSM.STATUS !== "database_offline") {
-      var overlaySection = $("<div>")
-        .attr("class", "section overlay-layers")
-        .appendTo($ui);
-
-      $("<p>")
-        .text(I18n.t("javascripts.map.layers.overlays"))
-        .attr("class", "text-muted")
-        .appendTo(overlaySection);
-
-      var overlays = $("<ul class='list-unstyled form-check'>")
-        .appendTo(overlaySection);
-
-      var addOverlay = function (layer, name, maxArea) {
-        var item = $("<li>")
-          .appendTo(overlays);
-
-        if (name === "notes" || name === "data") {
-          item
-            .attr("title", I18n.t("javascripts.site.map_" + name + "_zoom_in_tooltip"))
-            .tooltip("disable");
         }
+        map.addLayer(layer);
+      });
 
-        var label = $("<label>")
-          .attr("class", "form-check-label")
-          .appendTo(item);
+      $(item).on("dblclick", toggle);
 
-        var checked = map.hasLayer(layer);
+      map.on("baselayerchange", function () {
+        input.checked = map.hasLayer(layer);
+      });
+    }
 
-        var input = $("<input>")
-          .attr("type", "checkbox")
-          .attr("class", "form-check-input")
-          .prop("checked", checked)
-          .appendTo(label);
+    function initOverlays() {
+      $ui.find(".overlay-layers div.form-check").each(function () {
+        const item = this;
+        const layer = map[this.dataset.layerId];
+        const input = this.firstElementChild.firstElementChild;
+        $(item).tooltip("disable");
 
-        label.append(I18n.t("javascripts.map.layers." + name));
+        let checked = map.hasLayer(layer);
 
-        input.on("change", function () {
-          checked = input.is(":checked");
+        input.checked = checked;
+
+        $(input).on("change", function () {
+          checked = input.checked;
+          layer.cancelLoading?.();
+
           if (checked) {
             map.addLayer(layer);
           } else {
             map.removeLayer(layer);
+            $(`#layers-${name}-loading`).remove();
           }
-          map.fire("overlaylayerchange", { layer: layer });
         });
 
-        map.on("layeradd layerremove", function () {
-          input.prop("checked", map.hasLayer(layer));
+        map.on("overlayadd overlayremove", function () {
+          input.checked = map.hasLayer(layer);
         });
 
         map.on("zoomend", function () {
-          var disabled = map.getBounds().getSize() >= maxArea;
-          $(input).prop("disabled", disabled);
+          const disabled = map.getBounds().getSize() >= item.dataset.maxArea;
+          input.disabled = disabled;
 
-          if (disabled && $(input).is(":checked")) {
-            $(input).prop("checked", false)
-              .trigger("change");
+          if (disabled && input.checked) {
+            input.click();
             checked = true;
-          } else if (!disabled && !$(input).is(":checked") && checked) {
-            $(input).prop("checked", true)
-              .trigger("change");
+          } else if (!disabled && !input.checked && checked) {
+            input.click();
           }
 
-          $(item)
-            .attr("class", disabled ? "disabled" : "")
-            .tooltip(disabled ? "enable" : "disable");
+          item.classList.toggle("disabled", disabled);
+          $(item).tooltip(disabled ? "enable" : "disable");
         });
-      };
-
-      addOverlay(map.noteLayer, "notes", OSM.MAX_NOTE_REQUEST_AREA);
-      addOverlay(map.dataLayer, "data", OSM.MAX_REQUEST_AREA);
-      addOverlay(map.gpsLayer, "gps", Number.POSITIVE_INFINITY);
+      });
     }
   };
 

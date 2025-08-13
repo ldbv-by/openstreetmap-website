@@ -157,7 +157,6 @@ class OAuth2Test < ActionDispatch::IntegrationTest
     }.merge(options)
 
     get oauth_authorization_path(options)
-    assert_response :redirect
     assert_redirected_to login_path(:referer => request.fullpath)
 
     post login_path(:username => user.email, :password => "test")
@@ -223,18 +222,18 @@ class OAuth2Test < ActionDispatch::IntegrationTest
   end
 
   def test_token(token, user, client)
-    get user_preferences_path
+    get api_user_preferences_path
     assert_response :unauthorized
 
     auth_header = bearer_authorization_header(token)
 
-    get user_preferences_path, :headers => auth_header
+    get api_user_preferences_path, :headers => auth_header
     assert_response :success
 
-    get user_preferences_path(:access_token => token)
+    get api_user_preferences_path(:access_token => token)
     assert_response :unauthorized
 
-    get user_preferences_path(:bearer_token => token)
+    get api_user_preferences_path(:bearer_token => token)
     assert_response :unauthorized
 
     get api_trace_path(:id => 2), :headers => auth_header
@@ -242,17 +241,17 @@ class OAuth2Test < ActionDispatch::IntegrationTest
 
     user.suspend!
 
-    get user_preferences_path, :headers => auth_header
+    get api_user_preferences_path, :headers => auth_header
     assert_response :forbidden
 
     user.hide!
 
-    get user_preferences_path, :headers => auth_header
+    get api_user_preferences_path, :headers => auth_header
     assert_response :forbidden
 
     user.unhide!
 
-    get user_preferences_path, :headers => auth_header
+    get api_user_preferences_path, :headers => auth_header
     assert_response :success
 
     post oauth_revoke_path(:token => token)
@@ -263,7 +262,7 @@ class OAuth2Test < ActionDispatch::IntegrationTest
                            :client_secret => client.plaintext_secret)
     assert_response :success
 
-    get user_preferences_path, :headers => auth_header
+    get api_user_preferences_path, :headers => auth_header
     assert_response :unauthorized
   end
 end

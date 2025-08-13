@@ -2,7 +2,7 @@ require "test_helper"
 
 class I18nTest < ActiveSupport::TestCase
   I18n.available_locales.each do |locale|
-    define_method("test_#{locale.to_s.underscore}".to_sym) do
+    test locale.to_s do
       without_i18n_exceptions do
         # plural_keys = plural_keys(locale)
 
@@ -42,7 +42,7 @@ class I18nTest < ActiveSupport::TestCase
 
             assert_includes value, :other, "#{key}.other plural key missing"
           else
-            assert value.is_a?(String), "#{key} is not a string"
+            assert_kind_of String, value, "#{key} is not a string"
 
             value.scan(/%\{(\w+)\}/) do
               assert_includes variables, Regexp.last_match(1), "#{key} uses unknown interpolation variable #{Regexp.last_match(1)}"
@@ -56,12 +56,28 @@ class I18nTest < ActiveSupport::TestCase
   end
 
   Rails.root.glob("config/locales/*.yml").each do |filename|
-    lang = File.basename(filename, ".yml")
-    define_method("test_#{lang}_for_raw_html".to_sym) do
+    code = File.basename(filename, ".yml")
+    test "#{code} for raw html" do
       yml = YAML.load_file(filename)
       assert_nothing_raised do
         check_values_for_raw_html(yml)
       end
+    end
+
+    test "#{code} present once in ui_languages.yml" do
+      assert_equal(1, AVAILABLE_LANGUAGES.count { |language| language[:code] == code })
+    end
+  end
+
+  def test_ui_languages_have_yml_files
+    AVAILABLE_LANGUAGES.each do |language|
+      assert_path_exists Rails.root.join("config/locales/#{language[:code]}.yml")
+    end
+  end
+
+  def test_ui_languages_have_required_fields
+    AVAILABLE_LANGUAGES.each do |language|
+      assert_pattern { language => { code: String, native_name: String, english_name: String } }
     end
   end
 

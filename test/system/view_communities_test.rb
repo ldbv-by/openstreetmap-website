@@ -11,9 +11,9 @@ class ViewCommunitiesTest < ApplicationSystemTestCase
   def test_translated_links
     sign_in_as(create(:user))
 
-    visit edit_preferences_path
-    fill_in "Preferred Languages", :with => "fr"
-    click_button "Update Preferences"
+    visit basic_preferences_path
+    select "français", :from => "Preferred Language"
+    click_on "Update Preferences"
 
     visit "/communities"
     assert_link "OpenStreetMap États-Unis", :href => "https://www.openstreetmap.us/"

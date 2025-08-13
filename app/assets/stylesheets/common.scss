@@ -1,34 +1,8 @@
+@use "sass:map";
 @import "parameters";
 @import "bootstrap";
 @import "rails_bootstrap_forms";
-
-/* Bootstrap + r2 fixes */
-
-:root[dir=rtl] {
-  .bs-tooltip-auto[data-popper-placement^="right"] .tooltip-arrow {
-    /* no-r2 */
-    right: unset !important;
-    left: calc(-1 * var(--bs-tooltip-arrow-height)) !important;
-
-    &::before {
-      /* no-r2 */
-      left: unset !important;
-      right: -1px !important;
-    }
-  }
-
-  .bs-tooltip-auto[data-popper-placement^="left"] .tooltip-arrow {
-    /* no-r2 */
-    left: unset !important;
-    right: calc(-1 * var(--bs-tooltip-arrow-height)) !important;
-
-    &::before {
-      /* no-r2 */
-      right: unset !important;
-      left: -1px !important;
-    }
-  }
-}
+@import "colors";
 
 /* Styles common to large and small screens */
 
@@ -36,125 +10,95 @@
 
 body {
   font-size: $typeheight;
+  --dark-mode-map-filter: none;
 }
 
-p > img {
-  width: auto;
-  max-width: 100%;
+time[title] {
+  text-decoration: underline dotted;
 }
-
-small, aside {
-  font-size: 12px;
-}
-
-#container { position: relative; }
-
-.small_icon {
-  vertical-align: middle;
-  margin-right: $lineheight * 0.25;
-}
-
-[dir=rtl] { /* no-r2 */ text-align: right; }
-
-[dir=ltr] { /* no-r2 */ text-align: left; }
-
-/* Rules for icons */
-
-.icon {
-  display: inline-block;
-  vertical-align: top;
-  width: 20px;
-  height: 20px;
-  background: transparent image-url("sprite.png") no-repeat 0 0;
-  background-image: image-url("sprite.svg");
-  text-indent: -9999px;
-  overflow: hidden;
-}
-
-.icon.search      { /* no-r2 */ background-position: 0 0; }
-.icon.donate      { /* no-r2 */ background-position: -20px 0; }
-.icon.zoomin      { /* no-r2 */ background-position: -40px 0; }
-.icon.zoomout     { /* no-r2 */ background-position: -60px 0; }
-.icon.geolocate   { /* no-r2 */ background-position: -80px 0; }
-.active .icon.geolocate   { /* no-r2 */ background-position: -80px -20px; }
-.icon.layers      { /* no-r2 */ background-position: -100px 0; }
-.icon.key         { /* no-r2 */ background-position: -120px 0; }
-.icon.share       { /* no-r2 */ background-position: -140px 0; }
-.icon.clipboard   { /* no-r2 */ background-position: -160px 0; }
-.icon.link        { /* no-r2 */ background-position: -180px 0; }
-.icon.close       { /* no-r2 */ background-position: -200px 0; }
-.icon.close:hover { /* no-r2 */ background-position: -200px -20px; }
-.icon.check       { /* no-r2 */ background-position: -220px 0; }
-.icon.note        { /* no-r2 */ background-position: -240px 0; }
-.icon.note.grey   { /* no-r2 */ background-position: -240px -20px; }
-.icon.query       { /* no-r2 */ background-position: -260px 0; }
 
 /* Utility for de-emphasizing content */
 
-.text-muted a {
+.text-body-secondary a {
   color: $blue;
 }
 
-/* Rules for borders */
-/* These add additional colours to those provided by bootstrap */
-.border-grey {
-  border-color: $grey !important;
+/* Bootstrap contextual table classes overrides in dark mode */
+
+@include color-mode(dark) {
+  .table-primary {
+    --bs-table-bg: rgb(var(--bs-primary-rgb), .25);
+  }
+  .table-secondary {
+    --bs-table-bg: rgb(var(--bs-secondary-rgb), .25);
+  }
+  .table-success {
+    --bs-table-bg: rgb(var(--bs-success-rgb), .25);
+  }
+  .table-primary, .table-secondary, .table-success {
+    --bs-table-color: initial;
+    border-color: inherit;
+  }
 }
 
-.border-lightgrey {
-  border-color: $lightgrey !important;
+/* Utility for delayed loading spinner */
+
+.delayed-fade-in {
+  animation: 300ms linear forwards delayed-fade-in;
+}
+
+@keyframes delayed-fade-in {
+  0%   { opacity: 0 }
+  66%  { opacity: 0 }
+  100% { opacity: 1 }
+}
+
+/* Bootstrap close button overrides for nested light/dark themes */
+
+[data-bs-theme="dark"],
+[data-bs-theme] [data-bs-theme="dark"] {
+  --bs-btn-close-filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+[data-bs-theme="light"],
+[data-bs-theme] [data-bs-theme="light"] {
+  --bs-btn-close-filter: none;
 }
 
 /* Rules for the header */
 
-#menu-icon {
-  display: none;
-  float: right;
-  background: image-url("menu-icon.png") no-repeat;
-  background-size: 30px 30px;
-  width: 30px;
-  height: 30px;
-  margin: 14px 10px 0 0;
+#menu-icon svg {
+  fill: var(--bs-emphasis-color);
+  stroke: var(--bs-body-bg);
   opacity: 0.6;
 }
 
 header {
   height: $headerHeight;
   position: relative;
-  z-index: 1001;
   font-size: 14px;
 
-  h1, nav, nav > ul, nav > ul > li {
-    display: inline-block;
-  }
-
   > * {
-    height: 100%;
     padding: $lineheight * 0.5;
   }
 
-  h1, nav.primary {
-    float: left;
-  }
-
-  img.logo {
-    margin-top: -2px;
-  }
-
   h1 {
+    height: $headerHeight;
     font-size: 18px;
-    line-height: 1.2;
-    padding-top: 15px;
+    gap: $lineheight * 0.5;
   }
 
   .btn {
     font-size: 14px;
   }
+
+  .username {
+    max-width: 12em;
+  }
 }
 
-
 nav.primary {
-  & > .btn-group .btn-outline-primary {
+  #edit_tab .btn-outline-primary {
     @include button-outline-variant($green, $color-hover: $white, $active-color: $white);
   }
 
@@ -162,10 +106,6 @@ nav.primary {
     .btn-outline-primary {
       color: $grey;
       cursor: default;
-
-      .caret {
-        border-top-color: $grey;
-      }
 
       &:hover {
         background-color: lighten($green, 30%);
@@ -186,20 +126,12 @@ nav.primary {
 }
 
 nav.secondary {
-  position: absolute;
-  right: 0;
-
   .nav-link {
-    padding: 0.2rem;
-    color: $darkgrey;
+    padding: 0 0.3rem;
   }
 
-  > ul li.current a {
-    color: darken($darkgrey, 25%);
-  }
-
-  #inboxanchor {
-    background-color: lighten($grey, 10%);
+  > ul {
+    height: 1.5em;
   }
 }
 
@@ -216,78 +148,33 @@ nav.primary, nav.secondary {
   display: none;
 }
 
-body.compact-nav {
-  #compact-secondary-nav {
-    display: inline-block;
-  }
-  .compact-hide {
-    display: none;
-  }
-}
-
 body.small-nav {
-  #menu-icon {
-    display: block;
-  }
-
-  nav.primary,
-  nav.secondary {
-    float: none !important;
-    position: relative;
-    display: block;
-    clear: both;
-  }
-
   header {
     height: auto;
     min-height: $headerHeight;
-    background: #fff;
 
     &.closed nav {
-      display: none;
+      display: none !important;
     }
 
-    .search_forms {
-      display: block;
+    .username {
+      max-width: unset;
     }
-  }
-
-  #sidebar .search_forms,
-  #edit_tab,
-  #export_tab {
-    display: none;
   }
 
   nav.primary {
     padding: 0;
 
-    ul, li {
-      border: none;
-      border-radius: 0;
-      width: 100%;
-    }
-
-    ul {
-      border-top: 1px solid #eee;
-      li {
-        border-bottom: 1px solid #eee;
-        border-right: none;
-        > a {
-          border-radius: 0;
-          width: 100%;
-          text-align: center;
-          font-size: 15px;
-        }
-      }
-    }
-
-    .btn-group {
-      width: 100%;
+    #edit_tab {
       padding: 10px;
     }
   }
 
   nav.secondary {
+    > ul {
+      height: auto;
+    }
+
     .user-menu, .login-menu {
       width: 100%;
     }
@@ -297,33 +184,36 @@ body.small-nav {
     display: none;
   }
 
-  .compact-hide {
-    display: inline-block;
+  .overlay-sidebar #sidebar {
+    .welcome,
+    #banner {
+      display: none;
+    }
   }
+}
 
-  .overlay-sidebar #sidebar .welcome {
-    display: none;
-  }
+/* Rules for language selector */
 
-  .overlay-sidebar #sidebar #banner {
-    display: none;
+.select_language_list {
+  column-width: 160px;
+
+  a {
+    .native_name small {
+      font-size: 10px;
+    }
+
+    &:hover .english_name {
+      text-decoration: underline;
+    }
   }
 }
 
 /* Utility for styling notification numbers */
 
 .count-number {
-  background: lighten($green, 30%);
+  background: transparentize(lighten($green, 25%), .25);
   color: $gray-800;
   font-weight: $font-weight-normal;
-}
-
-/* Rules for the message shown in place of the map when javascript is disabled */
-
-#noscript {
-  z-index: 20000000;
-  margin-left: 400px;
-  margin-top: 50px;
 }
 
 /* Rules for Leaflet maps */
@@ -341,7 +231,8 @@ body.small-nav {
   display: block;
   height: 40px;
   width: 40px;
-  background-color: #333;
+  color: white;
+  padding: 10px;
   background-color: rgba(0,0,0,.6);
   outline: none;
 
@@ -352,13 +243,8 @@ body.small-nav {
 
   &.disabled,
   &.leaflet-disabled {
-    background-color: #333;
     background-color: rgba(0,0,0,.5);
     cursor: default;
-  }
-
-  &.active {
-    background-color: $vibrant-green;
   }
 
   &-first {
@@ -369,10 +255,10 @@ body.small-nav {
     border-end-start-radius: 4px;
     margin-bottom: 10px;
   }
+}
 
-  .icon {
-    margin: 10px;
-  }
+.leaflet-control.active .control-button {
+  background-color: $vibrant-green;
 }
 
 /* Rules for the sidebar and main map area */
@@ -396,61 +282,33 @@ body.small-nav {
   #sidebar {
     float: left;
     width: $sidebarWidth;
-    background: #fff;
-
-    #sidebar_loader {
-      display: none;
-    }
-
-    #sidebar_content {
-      padding: $spacer;
-    }
-
-    > div {
-      position: relative;
-    }
   }
 
   .overlay-sidebar #sidebar {
     position: absolute;
-    z-index: 1000;
     height: auto;
     overflow: hidden;
 
+    .welcome,
     #banner {
       display: block;
     }
 
-    .welcome {
-      display: block;
-    }
-
+    .sidebar-close-controls,
+    #sidebar_loader,
     #sidebar_content {
       display: none;
     }
   }
 
-  .welcome {
-    display: none;
-
-    p {
-      font-size: 110%;
-      font-weight: 300;
-    }
-  }
-
+  .welcome,
   #banner {
     display: none;
+  }
 
-    img {
-      display: block;
-      width: $sidebarWidth;
-    }
-
-    button.btn-close {
-      background-color: rgba(255, 255, 255, 0.5);
-      opacity: 1.0;
-    }
+  #banner img {
+    display: block;
+    width: $sidebarWidth;
   }
 
   #map {
@@ -468,6 +326,14 @@ body.small-nav {
     .leaflet-marker-draggable {
       cursor: move;
     }
+
+    .query-marker {
+      animation: 1500ms forwards query-marker-fade;
+
+      @keyframes query-marker-fade {
+        to { opacity: 0 }
+      }
+    }
   }
 
   #map-ui {
@@ -476,13 +342,7 @@ body.small-nav {
     float: right;
     width: 250px;
     height: 100%;
-    background: white;
     overflow: auto;
-
-    .section {
-      border-bottom: 1px solid $grey;
-      padding: $spacer;
-    }
   }
 }
 
@@ -496,13 +356,12 @@ body.small-nav {
     }
 
     #map-ui {
-      z-index: 9999;
       width: 100%;
       height: 50%;
       overflow-y: scroll;
     }
 
-    .overlay-sidebar {
+    .overlay-sidebar.overlay-right-sidebar {
       #sidebar {
         position: absolute;
         width: 350px;
@@ -510,7 +369,7 @@ body.small-nav {
         overflow: hidden;
       }
 
-      #map, #map-ui {
+      #map {
         height: 100%;
       }
     }
@@ -518,52 +377,22 @@ body.small-nav {
 }
 
 .layers-ui {
-  .base-layers {
-    .leaflet-container {
-      width: 100%;
-      height: 50px;
-      cursor: pointer;
+  .base-layers > * {
+    height: 3.5rem;
+
+    > .btn {
+      box-sizing: content-box;
+      top: - map.get($border-widths, 4);
+      left: - map.get($border-widths, 4);
+      --bs-btn-border-color: var(--bs-body-bg);
     }
-
-    li  {
-      overflow: hidden;
-      border-radius: 3px;
-      border: 2px solid #fff;
-      margin-bottom: 8px;
-      position: relative;
-      transition: border-color 0.08s ease-in;
-
-      label {
-        position: absolute;
-        top: 0;
-        left: 0;
-        padding: 2px 6px;
-        border-bottom-right-radius: 3px;
-        cursor: pointer;
-        font-weight: 600;
-        font-size: 16px;
-        text-stroke: 2px #fff;
-        background: rgba(255,255,255,.9);
-        z-index: 1000;
-        input[type="radio"] {
-          display: none;
-        }
-      }
-
-      &.active { border-color: darken($green, 10%); }
-      &:hover {
-        border-color: $grey;
-        &.active { border-color: darken($green, 20%); }
-      }
+    > .btn:hover {
+      --bs-btn-border-color: var(--bs-primary-border-subtle);
     }
   }
 
   .overlay-layers {
-    p {
-      font-size: 13px;
-      margin-bottom: 8px;
-    }
-    li.disabled { color: $darkgrey; }
+    .form-check.disabled { color: $darkgrey; }
   }
 }
 
@@ -587,27 +416,63 @@ body.small-nav {
   border-top: 0px !important;
 }
 
+.leaflet-popup-content-wrapper, .leaflet-popup-tip,
+.leaflet-contextmenu, .leaflet-contextmenu-item,
+.leaflet-control-attribution, .leaflet-control-scale-line {
+  @extend .bg-body, .text-body;
+}
+
+.leaflet-control-attribution, .leaflet-control-scale-line {
+  @extend .bg-opacity-75;
+  text-shadow: none !important;
+}
+
+.leaflet-contextmenu-item.over {
+  @extend .bg-body-secondary, .border-secondary, .border-opacity-10;
+}
+
 .leaflet-popup-content-wrapper {
-  border-radius: 4px !important;
+  @extend .rounded-1;
+
+  a {
+    color: var(--bs-link-color) !important;
+  }
+}
+
+@include color-mode(dark) {
+  .leaflet-container .leaflet-control-attribution a {
+    color: var(--bs-link-color);
+  }
+
+  .leaflet-control-scale-line {
+    border-color: rgba(var(--bs-light-rgb), .75) !important;
+  }
+}
+
+@mixin dark-map-color-scheme {
+  .leaflet-tile-container,
+  #legend .filtered-image {
+    filter: var(--dark-mode-map-filter);
+  }
+
+  .leaflet-tile-container .leaflet-tile {
+    filter: none;
+  }
+}
+
+body[data-map-theme="dark"] {
+  @include dark-map-color-scheme;
+}
+
+@include color-mode(dark) {
+  body:not([data-map-theme]) {
+    @include dark-map-color-scheme;
+  }
 }
 
 /* Rules for attribution text under the main map shown on printouts */
 
 .donate-attr { color: darken($green, 10%) !important; }
-
-/* Rules for the sidebar */
-
-#browse_status {
-  input {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  > div {
-   padding: $spacer;
-  }
-}
 
 /* Temporary label size override until we remove site-wide font customisation */
 
@@ -644,44 +509,32 @@ legend {
 
 /* Rules for the search and direction forms */
 
-header .search_forms,
 .directions_form {
   display: none;
 }
 
-/* Rules for the map key which appears in the popout sidebar */
-
-#mapkey {
- .mapkey-table-key img {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+.search_form {
+  .describe_location {
+    font-size: 10px;
   }
+
+  input:not(:placeholder-shown) + .input-group-text .describe_location {
+    display: none;
+  } 
 }
 
-/* Rules for search sidebar */
+/* Rules for search results */
 
-#sidebar .search_results_entry {
-  ul li.selected {
-    background: $list-highlight;
-  }
+.search_results_entry li.list-group-item {
+  border-right: 1em solid var(--marker-color);
+}
 
-  .search_more .loader {
-    display: none;
-  }
+.leaflet-marker-icon.activatable:is(.active, :hover) > svg {
+  transform: scale(1.5);
+  transform-origin: bottom;
 }
 
 /* Rules for routing */
-
-div.direction {
-  background-image: image-url('routing-sprite.png');
-  width: 20px;
-  height: 20px;
-  background-repeat: no-repeat;
-}
-@for $i from 0 through 25 {
-div.direction.i#{$i} { background-position: #{($i)*-20}px 0px; }
-}
 
 td.distance {
     font-size: x-small;
@@ -689,162 +542,122 @@ td.distance {
 tr.turn {
     cursor: pointer;
 }
-tr.turn:hover {
-    background: $list-highlight;
-}
 
-.routing_marker { width: 15px; cursor: move; }
+.routing_marker_column {
+  margin-left: .35rem;
+  margin-right: .35rem;
+  width: 15px;
 
-.browse_status {
-  display: none;
+  svg {
+    cursor: move;
+  }
 }
 
 /* Rules for the history sidebar */
 
-#sidebar .changesets {
-  li {
-    &.selected { background: $list-highlight; }
-    /* color is derived from changeset bbox fillColor in history.js */
+.changeset-above-sidebar-viewport {
+  --changeset-border-color: #CC6655;
+  --changeset-fill-color: #DDBBBB;
+  --changeset-outline-color: #FFF4F4;
+}
+.changeset-in-sidebar-viewport {
+  --changeset-border-color: #FF9500;
+  --changeset-fill-color: #FFFFAF;
+  --changeset-outline-color: #FFFFFF;
+  &.changeset-highlight-outline {
+    filter: drop-shadow(0px 0px 2px rgba(0, 0, 0, .75));
+  }
+}
+.changeset-below-sidebar-viewport {
+  --changeset-border-color: #8888AA;
+  --changeset-fill-color: #CCCCDD;
+  --changeset-outline-color: #F4F4FF;
+}
+.changeset-highlight-outline {
+  filter: drop-shadow(0px 0px 2px rgba(0, 0, 0, .25));
+}
 
-    a.stretched-link > span, a:not(.stretched-link), [title] {
+#sidebar .changesets {
+  .changeset-color-hint-bar {
+    height: 2px;
+    background: var(--changeset-border-color);
+  }
+
+  li {
+    &.selected {
+      @extend :hover;
+    }
+
+    a.stretched-link > bdi, a:not(.stretched-link), [title] {
       position: relative;
       z-index: 2; /* needs to be higher than Bootstrap's stretched link ::after z-index */
     }
   }
+}
 
-  .changeset_more .loader {
-    display: none;
-    width: 100%;
-  }
+#sidebar .changeset_line .changeset_num_comments {
+  min-width: 2.5em;
 }
 
 /* Rules for the browse sidebar */
 
 #sidebar_content {
-  .browse-section {
-    padding-bottom: $spacer;
-    margin-bottom: $spacer;
-    border-bottom: 1px solid $grey;
-
-    h4:first-child {
-      word-wrap: break-word;
-    }
-  }
-
-  .browse-section:last-of-type {
-    border-bottom: none;
-  }
-
   .browse-tag-list {
-    background-color: $offwhite;
     table-layout: fixed;
-    border-collapse: separate;
-    border-spacing: 0;
-    width: 100%;
-    margin-bottom: $spacer;
 
-    th, td {
-      border-bottom: 1px solid $grey;
+    tr > *:not([colspan]) {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      word-break: break-word;
     }
 
-    tr:last-child th, tr:last-child td {
+    tr:last-child > * {
       border-bottom: 0;
     }
-
-    .browse-tag-k,
-    .browse-tag-v {
-      width: 50%;
-      padding: 6px 10px;
-      word-wrap: break-word;
-      white-space: pre-wrap;
-    }
-
-    .browse-tag-k {
-      font-weight: 500;
-      background-color: $offwhite;
-    }
-
-    .browse-tag-v {
-      border-left: 1px solid $grey;
-      background-color: #fff;
-    }
-
-    .colour-preview-box {
-      float: right;
-      width: 14px;
-      height: 14px;
-      margin: 4px 0px;
-      border: 1px solid rgba(0, 0, 0, .1);
-      // add color via inline css on element: background-color: <tag value>;
-    }
   }
 
-  span.action-button:hover {
-    cursor: pointer;
-    text-decoration: underline;
-  }
+  .browse-element-list {
+    line-height: 1.25rem;
 
-  .note-description {
-    overflow: hidden;
-    margin: 0 0 10px 10px;
+    .browse-icon {
+      height: 1.25rem;
+    }
+
+    .d-flex > .browse-icon {
+      height: max(20px, 1.25rem);
+    }
   }
 
   .query-results {
     display: none;
-
-    ul {
-      li {
-        &.query-result {
-          cursor: pointer;
-        }
-
-        &.selected {
-          background: $list-highlight;
-        }
-      }
-    }
   }
 }
 
-/* Bootstrap buttons don't have any vertical margin, so
-   they touch when adjacent buttons wrap onto a new line
-   e.g. wide form buttons on a narrow sidebar */
-
-.btn-wrapper {
-  > .btn {
-    margin-bottom: $spacer * 0.25;
+@include color-mode(dark) {
+  #sidebar_content .browse-element-list .browse-icon-invertible {
+    filter: invert(.8) hue-rotate(180deg);
   }
+}
+
+/* Force LTR/RTL alignment for placeholder text */
+
+.form-control::placeholder {
+  text-align: left;
 }
 
 /* Rules for export sidebar */
 
 .export_form {
-  .export_area_inputs,
-  .export_button {
-    text-align: center;
-  }
-
   .export_area_inputs {
-    margin-bottom: $spacer;
     input[type="text"] {
       width: 100px;
-      text-align: center;
     }
   }
 
   .export_boxy {
-    background: $lightgrey;
-
-    #maxlat { margin-top: -1px; }
-    #minlon {
-      float: left;
-      /* no-r2 */ margin-left: -1px;
+    > * {
+        margin: -1px;
     }
-    #maxlon {
-      float: right;
-      /* no-r2 */ margin-right: -1px;
-    }
-    #minlat { margin-bottom: -1px; }
   }
 }
 
@@ -857,30 +670,25 @@ tr.turn:hover {
     bottom: 0;
     width: 100%;
   }
-
-  #map {
-    height: 100%;
-    overflow: hidden;
-  }
 }
 
 /* Rules for non-map content pages */
 
-.content-heading {
-  background: $lightgrey;
-}
-
 .content-inner {
-  position: relative;
   max-width: 960px;
-  margin: auto;
   padding: $lineheight;
 }
 
-/* Overrides for pages that use new layout conventions */
+/* Rules for login and signup pages */
+
+.sessions-new, .users-new, .users-create {
+  #content .content-inner {
+    max-width: 760px;
+  }
+}
 
 .header-illustration {
-  background-position: 0 0;
+  background-position: right;
   background-repeat: no-repeat;
   position: relative;
   min-height: 200px;
@@ -889,26 +697,16 @@ tr.turn:hover {
   bottom: 0;
 
   &.new-user-main {
-    background-image: image-url("sign-up-illustration.png");
+    background-image: image-url("sign-up-illustration.svg");
+    background-position-x: 70px;
   }
 
   &.confirm-main {
-    background-image: image-url("confirm-illustration.png");
+    background-image: image-url("confirm-illustration.svg");
   }
 
   &.new-user-terms {
-    background-image: image-url("terms-illustration.png");
-  }
-
-  &.new-user-arm {
-    height: 110px;
-    width: 130px;
-    left: 280px;
-    top: 180px;
-    background-image: image-url("sign-up-illustration-arm.png");
-    position: absolute;
-    z-index: 100;
-    pointer-events: none;
+    background-image: image-url("terms-illustration.svg");
   }
 }
 
@@ -918,15 +716,10 @@ tr.turn:hover {
   h1 {
     transform: scaleX(-1);
   }
-}
 
-#content.maximised {
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border: 0;
-  z-index: 2000;
+  ul {
+    transform: scaleX(-1);
+  }
 }
 
 /* Rules for small maps in content areas */
@@ -946,16 +739,13 @@ tr.turn:hover {
 
 .content_map .leaflet-popup-content {
   margin: $spacer;
-  min-height: 50px;
 }
 
 /* Rules for user popups on maps */
 
 .user_popup {
-  min-width: 200px;
   p {
-    padding: 0 0 5px 0;
-    margin: 0 0 0 60px;
+    margin: 0 0 5px 0 !important;
     font-size: 12px;
   }
 }
@@ -967,20 +757,25 @@ tr.turn:hover {
     height: 400px;
     display: none;
   }
-  .comments {
-    max-width: 740px;
+  .diary-comment .col-auto {
+    width: 62px;
   }
-  .diary-comment {
-    border-top: 1px dashed $grey;
-    &:first-child {
-      border-top: 1px solid $grey;
-    }
+  .diary-comment .col {
+    max-width: 690px;
+  }
+}
+
+/* Rules for the issues page */
+
+.issues.issues-index {
+  td.reporting_users {
+    max-width: 5rem;
   }
 }
 
 /* Rules for the account confirmation page */
 
-.users-terms {
+.accounts-terms-show {
   .legale {
     padding: $lineheight;
     margin-bottom: $lineheight;
@@ -997,34 +792,6 @@ tr.turn:hover {
   }
 }
 
-/* Rules for messages pages */
-
-.messages {
-  .inbox-row {
-    background: $offwhite;
-  }
-
-  .inbox-row-unread td {
-    background: #CBEEA7;
-  }
-}
-
-.search_form {
-  background-color: $lightgrey;
-
-  #query {
-    z-index: 0;
-  }
-
-  .describe_location {
-    font-size: 10px;
-  }
-}
-
-.directions_form {
-  background-color: $lightgrey;
-}
-
 /* Rules for user images */
 
 img.user_image {
@@ -1038,10 +805,9 @@ img.user_thumbnail {
 }
 
 img.user_thumbnail_tiny {
-  width: auto;
-  height: auto;
-  max-width: 25px;
-  max-height: 25px;
+  width: 25px;
+  height: 25px;
+  object-fit: contain;
 }
 
 /* General styles for action lists / subnavs */
@@ -1074,15 +840,14 @@ div.secondary-actions {
 
 /* Rules for rich text */
 
-.richtext,
-.prose {
+.richtext {
   code {
-    background: $lightgrey;
+    background: var(--bs-secondary-bg);
     padding: 2px 3px;
   }
 
   pre {
-    background: $lightgrey;
+    background: var(--bs-secondary-bg);
     padding: 2px 3px;
     white-space: pre-wrap;
 
@@ -1093,82 +858,23 @@ div.secondary-actions {
 
   img {
     padding: $lineheight;
-    background-color: $offwhite;
+    background-color: var(--bs-tertiary-bg);
     display: block;
     max-width: 100%;
     margin: auto;
   }
 
   blockquote {
-    border-left: $lineheight solid $offwhite;
+    border-left: $lineheight solid var(--bs-tertiary-bg);
     padding-left: $lineheight;
     margin: 0;
-    color: $darkgrey;
+    color: var(--bs-secondary-color);
   }
 }
 
-/* Rules for the iD editor */
-
-.id-embed {
-  width: 100%;
-  height: 100%;
-}
-
-/* Rules for the "Welcome" page */
-.site-welcome, .site-fixthemap {
-  .sprite {
-    background-image: image-url("welcome-sprite.png");
-    background-size: 500px 250px;
-    display: block;
-  }
-
-  .sprite.small {
-    width: 50px;
-    height: 50px;
-  }
-
-  .sprite.x {
-    /* no-r2 */ background-position: -50px 0;
-  }
-
-  .sprite.term {
-    margin-right: 10px;
-    vertical-align: middle;
-  }
-
-  .sprite.node {
-    /* no-r2 */ background-position: -100px 0;
-  }
-
-  .sprite.way {
-    /* no-r2 */ background-position: -150px 0;
-  }
-
-  .sprite.tag {
-    /* no-r2 */ background-position: -200px 0;
-  }
-
-  .sprite.editor {
-    /* no-r2 */ background-position: -250px 0;
-  }
-
-  .sprite.question {
-    /* no-r2 */ background-position: -300px 0;
-  }
-
-  .sprite.rules {
-    /* no-r2 */ background-position: -350px 0;
-  }
-
-  .icon.note {
-    background-color: #333;
-    border-radius: 4px;
-  }
-}
+/* Rules for the "About" page */
 
 .site-about #content {
-  background-color: $lightgrey;
-
   .content-inner {
     max-width: 760px;
   }
@@ -1201,37 +907,84 @@ div.secondary-actions {
       margin-left: -1em;
     }
   }
+}
 
-  .icon {
-    width: 30px;
-    height: 30px;
-    background: 40px 40px image-url('about/sprite.png') no-repeat;
+/* Rules for tables with usernames */
 
-    &.local {
-      /* no-r2 */
-      background-position: 0px 0px;
+.messages-table .username,
+#block_list .username {
+  max-width: 20em;
+}
+
+/* Rules for navigation tabs */
+
+.nav-tabs .username {
+  max-width: 20em;
+}
+
+.bg-body-secondary .nav-tabs {
+  --bs-border-color: var(--bs-secondary-border-subtle);
+  --bs-secondary-bg: var(--bs-secondary-border-subtle);
+  margin-bottom: -1px;
+}
+
+/* Rules for traces */
+
+img.trace_image {
+  mix-blend-mode: darken;
+}
+
+@include color-mode(dark) {
+  img.trace_image {
+    filter: invert(1);
+    mix-blend-mode: lighten;
+  }
+}
+
+/* Rules for the heatmap */
+
+.heatmap {
+  grid-template-columns: auto;
+  grid-auto-columns: minmax(1em, 1fr);
+  grid-template-rows: auto;
+  grid-auto-rows: minmax(1em, 1fr);
+  font-size: x-small;
+  gap: 0.3em;
+
+  [data-date], [data-date] span {
+    display: block;
+    aspect-ratio: 1;
+    border-radius: 25%;
+  }
+
+  [data-date] {
+    background-color: #ededed;
+    span {
+      background-color: #14432a;
     }
-    &.community {
-      /* no-r2 */
-      background-position: 0px -40px;
+    &[data-count] {
+      background-color: #4dd05a;
     }
-    &.open {
-      /* no-r2 */
-      background-position: 0px -80px;
-    }
-    &.partners {
-      /* no-r2 */
-      background-position: 0px -120px;
-    }
-    &.infringement {
-      /* no-r2 */
-      background-position: 0px -160px;
-    }
-    &.legal {
-      /* no-r2 */
-      background-position: -45px -160px;
+    &:hover {
+      box-shadow: 0px 0px 0px 1px #8884;
     }
   }
 }
 
-@import 'browse';
+@include color-mode(dark) {
+  .heatmap {
+    [data-date] {
+      background-color: #2d333b;
+      span {
+        background-color: #4dd05a;
+      }
+      &[data-count] {
+        background-color: #14432a;
+      }
+    }
+  }
+}
+
+.tooltip.wide {
+  --bs-tooltip-max-width: none;
+}

@@ -12,6 +12,10 @@ github_auth_id: "dummy"
 github_auth_secret: "dummy"
 wikipedia_auth_id: "dummy"
 wikipedia_auth_secret: "dummy"
+apple_auth_id: "dummy"
+apple_team_id: "dummy"
+apple_key_id: "dummy"
+apple_private_key: "dummy"
 # Server URL for testing
 server_url: "test.host"
 # Storage services for testing
@@ -20,8 +24,9 @@ trace_file_storage: "test"
 trace_image_storage: "test"
 trace_icon_storage: "test"
 # Lower some rate limits for testing
-max_changeset_comments_per_hour: 30
-moderator_changeset_comments_per_hour: 60
+max_changeset_comments_per_hour: 10
+comments_to_max_changeset_comments: 20
+moderator_changeset_comments_per_hour: 15
 # Private key for signing id_tokens
 doorkeeper_signing_key: |
   -----BEGIN PRIVATE KEY-----
@@ -52,3 +57,7 @@ doorkeeper_signing_key: |
   cK1+/2V+OkM/0nXjxPwPj7LiOediUyZNUn48r29uGOL1S83PSUdyST207CP6mZjc
   K8aJmnGsVEAcWPzbpNh14q/c
   -----END PRIVATE KEY-----
+# Run system tests using headless Firefox
+system_test_headless: true
+# Override Firefox binary used in system tests
+#system_test_firefox_binary:

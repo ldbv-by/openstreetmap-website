@@ -2,14 +2,14 @@
 #
 # Table name: current_nodes
 #
-#  id           :bigint(8)        not null, primary key
-#  latitude     :integer          not null
-#  longitude    :integer          not null
-#  changeset_id :bigint(8)        not null
+#  id           :bigint           not null, primary key
+#  latitude     :bigint          not null
+#  longitude    :bigint          not null
+#  changeset_id :bigint           not null
 #  visible      :boolean          not null
 #  timestamp    :datetime         not null
-#  tile         :bigint(8)        not null
-#  version      :bigint(8)        not null
+#  tile         :bigint           not null
+#  version      :bigint           not null
 #
 # Indexes
 #
@@ -49,10 +49,8 @@ class Node < ApplicationRecord
                  :numericality => { :on => :update, :only_integer => true }
   validates :version, :presence => true,
                       :numericality => { :only_integer => true }
-  validates :latitude, :presence => true,
-                       :numericality => { :only_integer => true }
-  validates :longitude, :presence => true,
-                        :numericality => { :only_integer => true }
+  validates :latitude, :presence => true
+  validates :longitude, :presence => true
   validates :timestamp, :presence => true
   validates :changeset, :associated => true
   validates :visible, :inclusion => [true, false]
@@ -145,7 +143,7 @@ class Node < ApplicationRecord
     # shouldn't be possible to get race conditions.
     Node.transaction do
       lock!
-      check_consistency(self, new_node, user)
+      check_update_element_consistency(self, new_node, user)
       ways = Way.joins(:way_nodes).where(:visible => true, :current_way_nodes => { :node_id => id }).order(:id)
       raise OSM::APIPreconditionFailedError, "Node #{id} is still used by ways #{ways.collect(&:id).join(',')}." unless ways.empty?
 
@@ -159,6 +157,8 @@ class Node < ApplicationRecord
       # update the changeset with the deleted position
       changeset.update_bbox!(bbox)
 
+      changeset.num_deleted_nodes += 1
+
       save_with_history!
     end
   end
@@ -166,7 +166,7 @@ class Node < ApplicationRecord
   def update_from(new_node, user)
     Node.transaction do
       lock!
-      check_consistency(self, new_node, user)
+      check_update_element_consistency(self, new_node, user)
 
       # update changeset first
       self.changeset_id = new_node.changeset_id
@@ -184,23 +184,23 @@ class Node < ApplicationRecord
       # update changeset bbox with *new* position
       changeset.update_bbox!(bbox)
 
+      changeset.num_modified_nodes += 1
+
       save_with_history!
     end
   end
 
   def create_with_history(user)
-    check_create_consistency(self, user)
+    check_create_element_consistency(self, user)
     self.version = 0
     self.visible = true
 
     # update the changeset to include the new location
     changeset.update_bbox!(bbox)
 
-    save_with_history!
-  end
+    changeset.num_created_nodes += 1
 
-  def tags_as_hash
-    tags
+    save_with_history!
   end
 
   def tags

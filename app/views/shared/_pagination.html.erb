@@ -1,23 +1,31 @@
-<nav>
-  <ul class="pagination">
-    <% if newer_id -%>
-      <li class="page-item">
-        <%= link_to t(newer_key), @params.merge(:before => nil, :after => newer_id), :class => "page-link" %>
-      </li>
-    <% else -%>
-      <li class="page-item disabled">
-        <span class="page-link"><%= t(newer_key) %></span>
-      </li>
-    <% end -%>
+<% if older_id || newer_id %>
 
-    <% if older_id -%>
-      <li class="page-item">
-        <%= link_to t(older_key), @params.merge(:before => older_id, :after => nil), :class => "page-link" %>
-      </li>
-    <% else -%>
-      <li class="page-item disabled">
-        <span class="page-link"><%= t(older_key) %></span>
-      </li>
-    <% end -%>
+<% translation_scope ||= "shared.pagination.#{controller.controller_name}" %>
+<nav class="d-flex justify-content-between gap-2">
+  <ul class="pagination">
+    <%= pagination_item(newer_id && @params.merge(:before => nil, :after => nil),
+                        t(:newest, :scope => translation_scope)) do %>
+      <%= previous_page_svg_tag :class => "flex-shrink-0", :count => 2 %>
+    <% end %>
+  </ul>
+  <ul class="pagination">
+    <%= pagination_item(newer_id && @params.merge(:before => nil, :after => newer_id),
+                        t(:newer, :scope => translation_scope)) do %>
+      <%= previous_page_svg_tag :class => "flex-shrink-0" %>
+      <span class="d-none d-sm-block"><%= t :newer, :scope => translation_scope %></span>
+    <% end %>
+    <%= pagination_item(older_id && @params.merge(:before => older_id, :after => nil),
+                        t(:older, :scope => translation_scope)) do %>
+      <span class="d-none d-sm-block"><%= t :older, :scope => translation_scope %></span>
+      <%= next_page_svg_tag :class => "flex-shrink-0" %>
+    <% end %>
+  </ul>
+  <ul class="pagination">
+    <%= pagination_item(older_id && @params.merge(:before => nil, :after => 0),
+                        t(:oldest, :scope => translation_scope)) do %>
+      <%= next_page_svg_tag :class => "flex-shrink-0", :count => 2 %>
+    <% end %>
   </ul>
 </nav>
+
+<% end %>

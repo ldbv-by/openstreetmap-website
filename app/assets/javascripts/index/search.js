@@ -1,111 +1,84 @@
-//= require jquery-simulate/jquery.simulate
-//= require qs/dist/qs
-
 OSM.Search = function (map) {
-  $(".search_form input[name=query]").on("input", function (e) {
-    if ($(e.target).val() === "") {
-      $(".describe_location").fadeIn(100);
-    } else {
-      $(".describe_location").fadeOut(100);
-    }
-  });
-
-  $(".search_form a.button.switch_link").on("click", function (e) {
+  $(".search_form a.btn.switch_link").on("click", function (e) {
     e.preventDefault();
-    var query = $(e.target).parent().parent().find("input[name=query]").val();
-    if (query) {
-      OSM.router.route("/directions?from=" + encodeURIComponent(query) + OSM.formatHash(map));
-    } else {
-      OSM.router.route("/directions" + OSM.formatHash(map));
-    }
+    const query = $(this).closest("form").find("input[name=query]").val();
+    let search = "";
+    if (query) search = "?" + new URLSearchParams({ to: query });
+    OSM.router.route("/directions" + search + OSM.formatHash(map));
   });
 
   $(".search_form").on("submit", function (e) {
     e.preventDefault();
     $("header").addClass("closed");
-    var query = $(this).find("input[name=query]").val();
-    if (query) {
-      OSM.router.route("/search?query=" + encodeURIComponent(query) + OSM.formatHash(map));
-    } else {
-      OSM.router.route("/" + OSM.formatHash(map));
-    }
+    const params = new URLSearchParams({
+      query: this.elements.query.value,
+      zoom: map.getZoom(),
+      minlon: map.getBounds().getWest(),
+      minlat: map.getBounds().getSouth(),
+      maxlon: map.getBounds().getEast(),
+      maxlat: map.getBounds().getNorth()
+    });
+    const search = params.get("query") ? `/search?${params}` : "/";
+    OSM.router.route(search + OSM.formatHash(map));
   });
 
   $(".describe_location").on("click", function (e) {
     e.preventDefault();
-    var center = map.getCenter().wrap(),
-        precision = OSM.zoomPrecision(map.getZoom());
-    OSM.router.route("/search?whereami=1&query=" + encodeURIComponent(
-      center.lat.toFixed(precision) + "," + center.lng.toFixed(precision)
-    ));
+    $("header").addClass("closed");
+    const zoom = map.getZoom();
+    const [lat, lon] = OSM.cropLocation(map.getCenter(), zoom);
+
+    OSM.router.route("/search?" + new URLSearchParams({ lat, lon, zoom }));
   });
 
   $("#sidebar_content")
     .on("click", ".search_more a", clickSearchMore)
-    .on("click", ".search_results_entry a.set_position", clickSearchResult)
-    .on("mouseover", "li.search_results_entry:has(a.set_position)", showSearchResult)
-    .on("mouseout", "li.search_results_entry:has(a.set_position)", hideSearchResult)
-    .on("mousedown", "li.search_results_entry:has(a.set_position)", function () {
-      var moved = false;
-      $(this).one("click", function (e) {
-        if (!moved && !$(e.target).is("a")) {
-          $(this).find("a.set_position").simulate("click", e);
-        }
-      }).one("mousemove", function () {
-        moved = true;
-      });
-    });
+    .on("click", ".search_results_entry a.set_position", clickSearchResult);
 
-  var markers = L.layerGroup().addTo(map);
+  const markers = L.layerGroup().addTo(map);
+  let processedResults = 0;
 
   function clickSearchMore(e) {
     e.preventDefault();
     e.stopPropagation();
 
-    var div = $(this).parents(".search_more"),
-        csrf_param = $("meta[name=csrf-param]").attr("content"),
-        csrf_token = $("meta[name=csrf-token]").attr("content"),
-        params = {};
+    const div = $(this).parents(".search_more");
 
     $(this).hide();
-    div.find(".loader").show();
+    div.find(".loader").prop("hidden", false);
 
-    params[csrf_param] = csrf_token;
+    fetchReplace(this, div);
+  }
 
-    $.ajax({
-      url: $(this).attr("href"),
+  function fetchReplace({ href }, $target) {
+    return fetch(href, {
       method: "POST",
-      data: params,
-      success: function (data) {
-        div.replaceWith(data);
-      }
-    });
+      body: new URLSearchParams(OSM.csrf)
+    })
+      .then(response => response.text())
+      .then(html => {
+        const result = $(html);
+        $target.replaceWith(result);
+        result.filter("ul").children().each(showSearchResult);
+      });
   }
 
   function showSearchResult() {
-    var marker = $(this).data("marker");
-
-    if (!marker) {
-      var data = $(this).find("a.set_position").data();
-
-      marker = L.marker([data.lat, data.lon], { icon: OSM.getUserIcon() });
-
-      $(this).data("marker", marker);
-    }
-
+    const index = processedResults++;
+    const listItem = $(this);
+    const inverseGoldenAngle = (Math.sqrt(5) - 1) * 180;
+    const color = `hwb(${(index * inverseGoldenAngle) % 360}deg 5% 5%)`;
+    listItem.css("--marker-color", color);
+    const data = listItem.find("a.set_position").data();
+    const marker = L.marker([data.lat, data.lon], { icon: OSM.getMarker({ color, className: "activatable" }) });
+    marker.on("mouseover", () => listItem.addClass("bg-body-secondary"));
+    marker.on("mouseout", () => listItem.removeClass("bg-body-secondary"));
+    marker.on("click", function (e) {
+      OSM.router.click(e.originalEvent, listItem.find("a.set_position").attr("href"));
+    });
     markers.addLayer(marker);
-
-    $(this).closest("li").addClass("selected");
-  }
-
-  function hideSearchResult() {
-    var marker = $(this).data("marker");
-
-    if (marker) {
-      markers.removeLayer(marker);
-    }
-
-    $(this).closest("li").removeClass("selected");
+    listItem.on("mouseover", () => $(marker.getElement()).addClass("active"));
+    listItem.on("mouseout", () => $(marker.getElement()).removeClass("active"));
   }
 
   function panToSearchResult(data) {
@@ -117,7 +90,7 @@ OSM.Search = function (map) {
   }
 
   function clickSearchResult(e) {
-    var data = $(this).data();
+    const data = $(this).data();
 
     panToSearchResult(data);
 
@@ -128,43 +101,31 @@ OSM.Search = function (map) {
     e.stopPropagation();
   }
 
-  var page = {};
+  const page = {};
 
   page.pushstate = page.popstate = function (path) {
-    var params = Qs.parse(path.substring(path.indexOf("?") + 1));
-    $(".search_form input[name=query]").val(params.query);
-    $(".describe_location").hide();
+    const params = new URLSearchParams(path.substring(path.indexOf("?")));
+    if (params.has("query")) {
+      $(".search_form input[name=query]").val(params.get("query"));
+    } else if (params.has("lat") && params.has("lon")) {
+      $(".search_form input[name=query]").val(params.get("lat") + ", " + params.get("lon"));
+    }
     OSM.loadSidebarContent(path, page.load);
   };
 
   page.load = function () {
-    $(".search_results_entry").each(function (index) {
-      var entry = $(this),
-          csrf_param = $("meta[name=csrf-param]").attr("content"),
-          csrf_token = $("meta[name=csrf-token]").attr("content"),
-          params = {
-            zoom: map.getZoom(),
-            minlon: map.getBounds().getWest(),
-            minlat: map.getBounds().getSouth(),
-            maxlon: map.getBounds().getEast(),
-            maxlat: map.getBounds().getNorth()
-          };
-      params[csrf_param] = csrf_token;
-      $.ajax({
-        url: entry.data("href"),
-        method: "POST",
-        data: params,
-        success: function (html) {
-          entry.html(html);
+    $(".search_results_entry[data-href]").each(function (index) {
+      const entry = $(this);
+      fetchReplace(this.dataset, entry.children().first())
+        .then(() => {
           // go to first result of first geocoder
           if (index === 0) {
-            var firstResult = entry.find("*[data-lat][data-lon]:first").first();
+            const firstResult = entry.find("*[data-lat][data-lon]:first").first();
             if (firstResult.length) {
               panToSearchResult(firstResult.data());
             }
           }
-        }
-      });
+        });
     });
 
     return map.getState();
@@ -172,8 +133,7 @@ OSM.Search = function (map) {
 
   page.unload = function () {
     markers.clearLayers();
-    $(".search_form input[name=query]").val("");
-    $(".describe_location").fadeIn(100);
+    processedResults = 0;
   };
 
   return page;

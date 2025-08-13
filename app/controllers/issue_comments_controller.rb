@@ -1,5 +1,5 @@
 class IssueCommentsController < ApplicationController
-  layout "site"
+  layout :site_layout
 
   before_action :authorize_web
   before_action :set_locale
@@ -33,7 +33,7 @@ class IssueCommentsController < ApplicationController
   private
 
   def issue_comment_params
-    params.require(:issue_comment).permit(:body)
+    params.expect(:issue_comment => [:body])
   end
 
   # This sort of assumes there are only two roles

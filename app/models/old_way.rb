@@ -2,10 +2,10 @@
 #
 # Table name: ways
 #
-#  way_id       :bigint(8)        not null, primary key
-#  changeset_id :bigint(8)        not null
+#  way_id       :bigint           not null, primary key
+#  changeset_id :bigint           not null
 #  timestamp    :datetime         not null
-#  version      :bigint(8)        not null, primary key
+#  version      :bigint           not null, primary key
 #  visible      :boolean          default(TRUE), not null
 #  redaction_id :integer
 #
@@ -21,8 +21,6 @@
 #
 
 class OldWay < ApplicationRecord
-  include ConsistencyValidations
-
   self.table_name = "ways"
 
   # NOTE: this needs to be included after the table name changes, or
@@ -33,8 +31,8 @@ class OldWay < ApplicationRecord
   belongs_to :redaction, :optional => true
   belongs_to :current_way, :class_name => "Way", :foreign_key => "way_id", :inverse_of => :old_ways
 
-  has_many :old_nodes, :class_name => "OldWayNode", :query_constraints => [:way_id, :version], :inverse_of => :old_way
-  has_many :old_tags, :class_name => "OldWayTag", :query_constraints => [:way_id, :version], :inverse_of => :old_way
+  has_many :old_nodes, :class_name => "OldWayNode", :foreign_key => [:way_id, :version], :inverse_of => :old_way
+  has_many :old_tags, :class_name => "OldWayTag", :foreign_key => [:way_id, :version], :inverse_of => :old_way
 
   validates :changeset, :associated => true
   validates :timestamp, :presence => true

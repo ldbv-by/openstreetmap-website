@@ -7,7 +7,7 @@ class ReportDiaryEntryTest < ApplicationSystemTestCase
   end
 
   def test_no_link_when_not_logged_in
-    visit diary_entry_path(@diary_entry.user.display_name, @diary_entry)
+    visit diary_entry_path(@diary_entry.user, @diary_entry)
     assert_content @diary_entry.title
 
     assert_no_content I18n.t("diary_entries.diary_entry.report")
@@ -15,17 +15,17 @@ class ReportDiaryEntryTest < ApplicationSystemTestCase
 
   def test_it_works
     sign_in_as(create(:user))
-    visit diary_entry_path(@diary_entry.user.display_name, @diary_entry)
+    visit diary_entry_path(@diary_entry.user, @diary_entry)
     assert_content @diary_entry.title
 
-    click_link I18n.t("diary_entries.diary_entry.report")
+    click_on I18n.t("diary_entries.diary_entry.report")
     assert_content "Report"
     assert_content I18n.t("reports.new.disclaimer.intro")
 
     choose I18n.t("reports.new.categories.diary_entry.spam_label")
     fill_in "report_details", :with => "This is advertising"
     assert_difference "Issue.count", 1 do
-      click_button "Create Report"
+      click_on "Create Report"
     end
 
     assert_content "Your report has been registered successfully"
@@ -39,27 +39,21 @@ class ReportDiaryEntryTest < ApplicationSystemTestCase
     issue.resolve!
 
     sign_in_as(create(:user))
-    visit diary_entry_path(@diary_entry.user.display_name, @diary_entry)
+    visit diary_entry_path(@diary_entry.user, @diary_entry)
     assert_content @diary_entry.title
 
-    click_link I18n.t("diary_entries.diary_entry.report")
+    click_on I18n.t("diary_entries.diary_entry.report")
     assert_content "Report"
     assert_content I18n.t("reports.new.disclaimer.intro")
 
     choose I18n.t("reports.new.categories.diary_entry.spam_label")
     fill_in "report_details", :with => "This is advertising"
     assert_no_difference "Issue.count" do
-      click_button "Create Report"
+      click_on "Create Report"
     end
 
     issue.reload
-    assert_not issue.resolved?
+    assert_not_predicate issue, :resolved?
     assert_predicate issue, :open?
-  end
-
-  def test_missing_report_params
-    sign_in_as(create(:user))
-    visit new_report_path
-    assert_content I18n.t("reports.new.missing_params")
   end
 end

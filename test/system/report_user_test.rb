@@ -4,7 +4,7 @@ class ReportUserTest < ApplicationSystemTestCase
   def test_no_link_when_not_logged_in
     note = create(:note_with_comments)
     visit note_path(note)
-    assert_content note.comments.first.body
+    assert_content note.description
 
     assert_no_content I18n.t("users.show.report")
   end
@@ -14,14 +14,14 @@ class ReportUserTest < ApplicationSystemTestCase
     sign_in_as(create(:user))
     visit user_path(user)
 
-    click_link I18n.t("users.show.report")
+    click_on I18n.t("users.show.report")
     assert_content "Report"
     assert_content I18n.t("reports.new.disclaimer.intro")
 
     choose I18n.t("reports.new.categories.user.vandal_label")
     fill_in "report_details", :with => "This user is a vandal"
     assert_difference "Issue.count", 1 do
-      click_button "Create Report"
+      click_on "Create Report"
     end
 
     assert_content "Your report has been registered successfully"
@@ -35,14 +35,14 @@ class ReportUserTest < ApplicationSystemTestCase
     sign_in_as(create(:user))
     visit user_path(user)
 
-    click_link I18n.t("users.show.report")
+    click_on I18n.t("users.show.report")
     assert_content "Report"
     assert_content I18n.t("reports.new.disclaimer.intro")
 
     choose I18n.t("reports.new.categories.user.vandal_label")
     fill_in "report_details", :with => "This user is a vandal"
     assert_difference "Issue.count", 1 do
-      click_button "Create Report"
+      click_on "Create Report"
     end
 
     assert_content "Your report has been registered successfully"
@@ -52,14 +52,14 @@ class ReportUserTest < ApplicationSystemTestCase
 
     visit user_path(user)
 
-    click_link I18n.t("users.show.report")
+    click_on I18n.t("users.show.report")
     assert_content "Report"
     assert_content I18n.t("reports.new.disclaimer.intro")
 
     choose I18n.t("reports.new.categories.user.spam_label")
     fill_in "report_details", :with => "This user is a spammer"
     assert_no_difference "Issue.count" do
-      click_button "Create Report"
+      click_on "Create Report"
     end
 
     assert_content "Your report has been registered successfully"

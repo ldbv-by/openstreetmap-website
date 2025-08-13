@@ -2,10 +2,10 @@
 #
 # Table name: relations
 #
-#  relation_id  :bigint(8)        not null, primary key
-#  changeset_id :bigint(8)        not null
+#  relation_id  :bigint           not null, primary key
+#  changeset_id :bigint           not null
 #  timestamp    :datetime         not null
-#  version      :bigint(8)        not null, primary key
+#  version      :bigint           not null, primary key
 #  visible      :boolean          default(TRUE), not null
 #  redaction_id :integer
 #
@@ -21,8 +21,6 @@
 #
 
 class OldRelation < ApplicationRecord
-  include ConsistencyValidations
-
   self.table_name = "relations"
 
   # NOTE: this needs to be included after the table name changes, or
@@ -33,8 +31,8 @@ class OldRelation < ApplicationRecord
   belongs_to :redaction, :optional => true
   belongs_to :current_relation, :class_name => "Relation", :foreign_key => "relation_id", :inverse_of => :old_relations
 
-  has_many :old_members, -> { order(:sequence_id) }, :class_name => "OldRelationMember", :query_constraints => [:relation_id, :version], :inverse_of => :old_relation
-  has_many :old_tags, :class_name => "OldRelationTag", :query_constraints => [:relation_id, :version], :inverse_of => :old_relation
+  has_many :old_members, -> { order(:sequence_id) }, :class_name => "OldRelationMember", :foreign_key => [:relation_id, :version], :inverse_of => :old_relation
+  has_many :old_tags, :class_name => "OldRelationTag", :foreign_key => [:relation_id, :version], :inverse_of => :old_relation
 
   validates :changeset, :associated => true
   validates :timestamp, :presence => true

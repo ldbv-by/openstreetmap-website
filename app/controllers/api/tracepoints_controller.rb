@@ -1,10 +1,6 @@
 module Api
   class TracepointsController < ApiController
-    before_action :check_api_readable
-
     authorize_resource
-
-    around_action :api_call_handle_error, :api_call_timeout
 
     # Get an XML response containing a list of tracepoints that have been uploaded
     # within the specified bounding box, and in the specified page.
@@ -34,7 +30,7 @@ module Api
       end
 
       # get all the points
-      ordered_points = Tracepoint.bbox(bbox).joins(:trace).where(:gpx_files => { :visibility => %w[trackable identifiable] }).order("gpx_id DESC, trackid ASC, timestamp ASC")
+      ordered_points = Tracepoint.bbox(bbox).joins(:trace).where(:gpx_files => { :visibility => %w[trackable identifiable] }).order(:gpx_id => :desc, :trackid => :asc, :timestamp => :asc)
       unordered_points = Tracepoint.bbox(bbox).joins(:trace).where(:gpx_files => { :visibility => %w[public private] }).order("gps_points.latitude", "gps_points.longitude", "gps_points.timestamp")
       @points = ordered_points.union_all(unordered_points).offset(offset).limit(Settings.tracepoints_per_page).preload(:trace)
 

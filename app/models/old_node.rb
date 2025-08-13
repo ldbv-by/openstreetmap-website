@@ -2,14 +2,14 @@
 #
 # Table name: nodes
 #
-#  node_id      :bigint(8)        not null, primary key
-#  latitude     :integer          not null
-#  longitude    :integer          not null
-#  changeset_id :bigint(8)        not null
+#  node_id      :bigint           not null, primary key
+#  latitude     :bigint           not null
+#  longitude    :bigint           not null
+#  changeset_id :bigint           not null
 #  visible      :boolean          not null
 #  timestamp    :datetime         not null
-#  tile         :bigint(8)        not null
-#  version      :bigint(8)        not null, primary key
+#  tile         :bigint           not null
+#  version      :bigint           not null, primary key
 #  redaction_id :integer
 #
 # Indexes
@@ -26,7 +26,6 @@
 
 class OldNode < ApplicationRecord
   include GeoRecord
-  include ConsistencyValidations
 
   self.table_name = "nodes"
 
@@ -35,10 +34,8 @@ class OldNode < ApplicationRecord
   include Redactable
 
   validates :changeset, :associated => true
-  validates :latitude, :presence => true,
-                       :numericality => { :only_integer => true }
-  validates :longitude, :presence => true,
-                        :numericality => { :only_integer => true }
+  validates :latitude, :presence => true
+  validates :longitude, :presence => true
   validates :timestamp, :presence => true
   validates :visible, :inclusion => [true, false]
 
@@ -48,7 +45,7 @@ class OldNode < ApplicationRecord
   belongs_to :redaction, :optional => true
   belongs_to :current_node, :class_name => "Node", :foreign_key => "node_id", :inverse_of => :old_nodes
 
-  has_many :old_tags, :class_name => "OldNodeTag", :query_constraints => [:node_id, :version], :inverse_of => :old_node
+  has_many :old_tags, :class_name => "OldNodeTag", :foreign_key => [:node_id, :version], :inverse_of => :old_node
 
   def validate_position
     errors.add(:base, "Node is not in the world") unless in_world?
@@ -85,10 +82,6 @@ class OldNode < ApplicationRecord
   end
 
   attr_writer :tags
-
-  def tags_as_hash
-    tags
-  end
 
   # Pretend we're not in any ways
   def ways

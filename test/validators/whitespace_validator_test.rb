@@ -2,12 +2,14 @@ require "test_helper"
 
 class LeadingWhitespaceValidatable
   include ActiveModel::Validations
+
   validates :string, :whitespace => { :leading => false }
   attr_accessor :string
 end
 
 class TrailingWhitespaceValidatable
   include ActiveModel::Validations
+
   validates :string, :whitespace => { :trailing => false }
   attr_accessor :string
 end
@@ -22,7 +24,7 @@ class WhitespaceValidatorTest < ActiveSupport::TestCase
 
     strings.each do |v|
       validator.string = v
-      assert_not validator.valid?, "'#{v}' should not be valid"
+      assert_not_predicate validator, :valid?, "'#{v}' should not be valid"
     end
   end
 
@@ -44,7 +46,7 @@ class WhitespaceValidatorTest < ActiveSupport::TestCase
 
     strings.each do |v|
       validator.string = v
-      assert_not validator.valid?, "'#{v}' should not be valid"
+      assert_not_predicate validator, :valid?, "'#{v}' should not be valid"
     end
   end
 

@@ -5,42 +5,76 @@
 # Author: Ahmed-Najib-Biabani-Ibrahimkhel
 # Author: Ajeje Brazorf
 # Author: Amjad Khan
+# Author: شاه زمان پټان
 ---
 ps:
   html:
     dir: rtl
+  date:
+    formats:
+      heatmap: '%B %-d'
+  time:
+    formats:
+      friendly: '%e %B %Y په %H:%M'
   helpers:
     file:
-      prompt: فایل غوره کړئ
+      prompt: دوتنه ټاکل
     submit:
       diary_comment:
-        create: تبصره
+        create: څرگندونه
       diary_entry:
         create: خپرول
         update: تازه کول
       issue_comment:
-        create: تبصره ورگډول
+        create: څرگندونه ورگډول
       message:
         create: لېږل
-      client_application:
-        create: ثبتول
-        update: تازه کول
       oauth2_application:
         create: ثبتول
         update: تازه کول
       trace:
         create: پورته کول
         update: بدلونونه خوندي کول
+      user_block:
+        create: بنديز جوړول
+        update: بنديز وسمهالول
   activerecord:
+    errors:
+      models:
+        user_mute:
+          is_already_muted: له مخکې چوپ‌شوی
+        social_link:
+          attributes:
+            url:
+              http_parse_error: وېبتړ بايد له http:// or https:// سره پيل شي
     models:
+      acl: د لاسرسي واگ لړليک
+      changeset: بدلون‌ټولگه
+      changeset_tag: بدلون‌ټولگې نښلن
       country: هېواد
       friend: ملگری
+      issue: ستونزه
       language: ژبه
       message: پيغام
+      note: يادښت
+      old_relation: زړه اړيکه
+      old_relation_member: زړې اړيکې غړی
+      old_relation_tag: زړې اړيکې نښلن
       old_way: زړه لاره
+      relation: اړيکه
+      relation_member: اړيکې غړی
+      relation_tag: اړيکې نښلن
+      report: راپور
+      session: غونډه
       user: کارن
+      user_preference: کارن غوره‌توب
+      user_token: کارن نښه
       way: لار
+      way_tag: لار نښلن
     attributes:
+      client_application:
+        name: نوم (اړين دی)
+        url: ار غوښتنليک وېب‌تړ (اړين دی)
       diary_comment:
         body: جوسه
       diary_entry:
@@ -49,110 +83,204 @@ ps:
         latitude: لوړوالی
         longitude: اوږدوالی
         language_code: ژبه
+      doorkeeper/application:
+        name: نوم
+        scopes: پرېښولي
       friend:
         user: کارن
         friend: ملگری
       trace:
         user: کارن
         visible: ښکاره
-        name: نوم
+        name: دوتنې‌نوم
         size: کچه
         latitude: لوړوالی
         longitude: اوږدوالی
         public: ټولگړی
         description: څرگندونه
-        gpx_file: 'GPX دوتنه پورته کول:'
-        visibility: 'ښکارېدنه:'
-        tagstring: 'نښلنونه:'
+        gpx_file: 'جي‌اېف‌اېکس څار دوتنه غوره‌کول:'
+        visibility: ښکارېدنه
+        tagstring: نښلنونه
       message:
         sender: لېږونکی
         title: سکالو
         body: جوسه
         recipient: اخيستونکی
       redaction:
-        description: څرگندونه
+        title: سرليک
+        description: څرگنداوی
+      report:
+        category: د خپل راپور لامل غوره کړئ
       user:
         email: برېښليک
-        new_email: 'نوې برېښليک پته:'
-        active: فعال
+        new_email: نوې برېښليک پته
+        active: کارنده
         display_name: ښکارېدونکی نوم
-        description: څرگندونه
-        languages: ژبې
+        description: پېژنيال څرگنداوی
+        company: کمپنۍ
+        home_lat: لوړوالی
+        home_lon: اوږدوالی
+        languages: غوره ژبې
+        preferred_editor: غوره سمونگر
         pass_crypt: پټنوم
+        pass_crypt_confirmation: پټنوم تاييدول
   editor:
     default: تلواليز (اوسنی %{name})
     id:
       name: iD
+  auth:
+    providers:
+      none: هيڅ
+      google: گوگل
+      apple: مڼه
+      facebook: فيسبوک
+      github: گيټ‌هاب
+      wikipedia: ويکيپېډيا
+  api:
+    notes:
+      entry:
+        comment: څرگندونه
+        full: بشپړ یادښت
   accounts:
-    edit:
-      my settings: زما امستنې
-      openid:
-        link text: دا څه دی؟
-      public editing:
-        enabled link text: دا څه دی؟
-      contributor terms:
-        link text: دا څه دی؟
+    show:
+      title: گڼون سمول
+      my_account: زما گڼون
+      current email address: 'اوسنۍ برېښليک‌پته:'
+      external auth: بېرونۍ تاييدي
+      contributor_terms:
+        heading: مرستيالۍ لارښود
+      terms_of_use:
+        heading: کارولو منښتونه
+        agreed: تاسو په %{date} د کارونې منښتونو سره همغږيتوب وښود.
+        review: منښتونو بياکتنه
+        review_and_accept: د منښتونو بياکتنه او منل
       save changes button: بدلونونه خوندي کول
+    go_public:
+      heading: ټولگړی سمون
+    destroy:
+      success: گڼون ړنگ شو.
+    deletions:
+      show:
+        title: زما گڼون ړنگول
+        warning: خبرداری! د گڼون ړنگولو بهير وروستی دی او بېرته نشي راگرځېدلی.
+        delete_account: گڼون ړنگول
+        confirm_delete: ايا تاسو ډاډه ياست؟
+        cancel: ناگارل
+    terms:
+      show:
+        title: منښتونه
+        heading: منښتونه
+        heading_ct: د ونډه‌وال منښتونه
+        tou_explain:
+          tou: کارولو منښتونه
+        readable_summary: انساني لوست‌وړ لنډيز
+        informal_translations: نارسمي ژباړې
+        continue: پرله‌پورې
+        cancel: ناگارل
+        legale_select: 'د استوگنې هېواد:'
+        legale_names:
+          france: فرانسه
+          italy: اېټاليا
+          rest_of_world: د نړۍ پاتې برخه
+      terms_declined_flash:
+        terms_declined_link: دا ويکي مخ
+    pd_declarations:
+      show:
+        confirm: تاييدول
   browse:
-    created: جوړ شو
-    closed: تړل شوی
+    version: بل‌بڼه
+    in_changeset: بدلون‌ټولگه
+    anonymous: ورکنومی
+    no_comment: (هېڅ څرگندونه نشته)
+    part_of: برخه د
+    download_xml: اېکس‌اېم‌اېل راکښته‌کول
+    location: 'ځای:'
     relation:
       members: غړي
     relation_member:
       type:
         way: لار
     not_found:
-      type:
-        way: لار
+      title: ونه موندل شو
     timeout:
+      title: د وخت پای تېروتنه
       type:
         way: لار
+        relation: اړيکه
+        changeset: بدلون‌ټولگه
     redacted:
       type:
         way: لار
+        relation: اړيکه
     start_rjs:
+      load_data: اومتوک بارول
       loading: رابرسېرېږي...
+    tag_details:
+      tags: نښلنونه
+      email_link: برېښليک %{email}
+    versions_navigation:
+      way: لار
+      relation: اړيکه
+      history: پېښليک
+      version: 'بلبڼه #%{version}'
+      versions_label: 'بل‌بڼې:'
+  old_elements:
+    index:
+      older_versions: زړې بلبڼې
+      newer_versions: نوې بلبڼې
+  changeset_comments:
+    feeds:
+      comment:
+        commented_at_by_html: هم‌مهاله‌ %{when} کوونکی %{user}
   changesets:
-    changeset:
-      anonymous: ورکنومی
-    changesets:
-      id: پېژند
-      user: کارن
-      comment: تبصره
-      area: سيمه
+    index:
+      older_changesets: زړې بدلون‌ټولگې
+      newer_changesets: نوې بدلون‌ټولگې
+      feed:
+        created: جوړ شو
+        closed: تړل شوی
+        belongs_to: ليکوال
+    paging_nav:
+      ways_title: لارې
   dashboards:
     popup:
-      friend: ملگری
+      your location: ستاسو ځای
   diary_entries:
     form:
       location: 'ځای:'
       use_map_link: نخشه کارول
     show:
-      leave_a_comment: يوه تبصره پرېښودل
+      discussion: شننه
+      subscribe: ونډه‌کښل
+      unsubscribe: له ونډې‌وتل
+      leave_a_comment: يوه څرگندونه پرېښودل
       login: ننوتل
     diary_entry:
-      confirm: تاييد
+      full_entry: بشپړه ننوتنه کتل
+      no_comments: هېڅ څرگندونه نشته
+      edit_link: دا ننوتنه سمول
+      hide_link: دا ننوتنه پټول
+      unhide_link: دا ننوتنه نه‌پټول
+      confirm: تاييدول
+      report: د دې ننوتنې راپور ورکول
     diary_comment:
       comment_from_html: په %{comment_created_at} باندې د %{link_user} تبصره
-      hide_link: دا تبصره پټول
-      confirm: تاييد
+      hide_link: دا څرگندونه پټول
+      confirm: تاييدول
+      report: د دې څرگندونې راپور ورکول
     location:
       location: 'ځای:'
-      view: کتل
-      edit: سمول
-    comments:
-      when: کله
-      comment: تبصره
-  friendships:
-    make_friend:
-      button: د ملگري په توگه ورگډول
   geocoder:
     search_osm_nominatim:
       prefix:
+        aeroway:
+          gate: د هوايي ډگر ور
+          runway: ځغاست‌ليکه
         amenity:
           bank: بانک
           brothel: کنجرتون
           bus_station: د بسونو اډه
+          cafe: چای‌ځی
           casino: جوارګرتون
           cinema: سينما
           clinic: کلينيک
@@ -170,6 +298,8 @@ ps:
           ice_cream: آيسکريم
           kindergarten: وړکتون
           library: کتابتون
+          marketplace: بازارځی
+          parking: تمځی
           pharmacy: درملتون
           place_of_worship: عبادتځی
           police: پوليس
@@ -277,13 +407,19 @@ ps:
           river: رود
           stream: لښتی
           waterfall: ځوړاوبی
-      types:
-        cities: ښارونه
-        towns: ښارګوټي
-        places: ځايونه
-    results:
-      no_results: کومې پايلې و  نه موندل شوې
-      more_results: نورې پايلې
+  searches:
+    queries:
+      create:
+        no_results: کومې پايلې و  نه موندل شوې
+        more_results: نورې پايلې
+  directions:
+    show:
+      distance: واټن
+      time: وخت
+      kilometers: کیلومتره
+      miles_feet: ميله، فوټه
+      miles_yards: ميله، يارډه
+      distance_units_settings: واټن يوونونو اوڼنې
   layouts:
     home: کور
     logout: وتل
@@ -292,9 +428,9 @@ ps:
     edit: سمول
     history: پېښليک
     help: لارښود
-    make_a_donation:
-      text: بسپنه ورکول
     learn_more: نور مالومات
+    header:
+      ok: ښه
   user_mailer:
     diary_comment_notification:
       hi: '%{to_user} سلامونه،'
@@ -310,41 +446,107 @@ ps:
     confirm_email:
       button: تاييد
   messages:
-    inbox:
-      date: نېټه
-    message_summary:
-      reply_button: ځوابول
-      destroy_button: ړنگول
     new:
       title: پيغام لېږل
-    outbox:
-      date: نېټه
     show:
       title: پيغام لوستل
       reply_button: ځواب
-    sent_message_summary:
-      destroy_button: ړنگول
+    mailboxes:
+      messages_table:
+        date: نېټه
+      message:
+        destroy_button: ړنگول
+    outboxes:
+      message:
+        destroy_button: ړنگول
   passwords:
-    lost_password:
+    new:
       heading: آيا پټنوم مو هېر شوی؟
-      email address: 'برېښليک پته:'
+      email address: برېښليک‌پته
+  preferences:
+    preferences:
+      navigation:
+        preferences: غوره‌توبونه
+        advanced_preferences: پرمختللي غوره‌توبونه
+    basic_preferences:
+      show:
+        preferred_language: غوره‌شوې ژبه
+    advanced_preferences:
+      show:
+        title: زما پرمختللي غوره‌توبونه
+        save: غوره‌توبونه هممهالول
   profiles:
-    edit:
-      image: 'انځور:'
-      new image: يو انځور ورگډول
+    profile_sections:
+      navigation:
+        description: څرگنداوی
+        links: تړنې
+        image: 'انځور:'
+        company: کمپنۍ
+        location: ځای
+    descriptions:
+      update:
+        success: پېژنيال څرگنداوی هم‌مهاله‌شو.
+        failure: پېژنيال څرگنداوی هم‌مهاله کېدای نشي.
+    links:
+      show:
+        save: پېژنيال هم‌مهالول
+        cancel: ناگارل
+        social_links:
+          title: د ټولنيز پېژنيال وېبتړنې
+          remove: لرې کول
+      update:
+        success: پېژنيال تړنې هم‌مهال‌شوې.
+        failure: پېژنيال تړنې نشي هم‌مهالېدلی.
+    images:
+      show:
+        title: پېژنيال سمول
+        save: پېژنيال هم‌مهالول
+        cancel: ناگارل
+        new image: يو انځور ورگډول
+      update:
+        success: پېژنيال انځور هم‌مهاله شو.
+        failure: پېژنيال انځور نشي هم‌مهالېدلی.
+    companies:
+      show:
+        title: پېژنيال سمول
+        save: پېژنيال هم‌مهالول
+        cancel: ناگارل
+      update:
+        success: د کمپنۍ پېژنيال هم‌مهاله‌شو.
+        failure: پېژنيال کمپنۍ نشي هم‌مهالېدلی.
+    locations:
+      show:
+        title: پېژنيال سمول
+        save: پېژنيال هم‌مهالول
+        cancel: ناگارل
+      update:
+        success: پېژنيال ځای هم‌مهاله‌شو.
+        failure: پېژنيال ځای نشي هم‌مهالېدلی.
   sessions:
     new:
-      title: ننوتل
-      heading: ننوتل
+      tab_title: ننوتل
       password: 'پټنوم:'
       login_button: ننوتل
-      auth_providers:
-        github:
-          title: د گېټ هب له لارې ننوتل
-          alt: د يو گېټ هب گڼون له لارې ننوتل
     destroy:
       title: وتل
       logout_button: وتل
+  shared:
+    pagination:
+      changeset_comments:
+        oldest: زړې څرگندونې
+        newest: نوې څرگندونې
+      diary_comments:
+        oldest: زړې څرگندونې
+        newest: نوې څرگندونه
+      diary_entries:
+        oldest: زړې ننوتنې
+        newest: نوې ننوتنې
+      issues:
+        oldest: زړې ستونزې
+        newest: نوې ستونزه
+      users:
+        oldest: زاړه کارنان
+        newest: نوي کارنان
   site:
     copyright:
       foreign:
@@ -352,35 +554,43 @@ ps:
       native:
         title: د دې مخ په اړه
       legal_babble:
+        lead_2_get_started_mapping: نخشه جوړول پيلول
+        lead_2_weeklyosm: اوونيزه او اېس اېم
+        lead_2_osm_community: او اېس اېم ټولنه
+        lead_2_osm_foundation: اواېس اېم بنسټ
+        lead_2_making_donation: بسپنه ورکول
+        licensing_1_open: پرانيستل
         credit_1_html: موږ غواړو چې تاسو کریډیټ وکاروي لپاره &ldquo;&copy; د اوفن
           سټریټ ميپ مرسته کوونکی&rdquo;.
-    edit:
+        services_title_html: زياتي چوپړونه
+    not_public_flash:
       user_page_link: د کارن مخ
     export:
       licence: منښتليک
-      options: خوښنې
-      format: بڼه
+      export_download: راکښته‌کول...
     sidebar:
       search_results: د پلټنې پايلې
-      close: تړل
     search:
       search: پلټل
       where_am_i: زه چېرته يم؟
       submit_text: ورځه
-    key:
-      table:
-        entry:
-          forest: ځنگل
-          park: پارک
-          lake:
-          - ډنډ
-          - زېرمتون
-          farm: کرونده
-          cemetery: هديره
-          military: پوځي سيمه
-          school:
-          - ښوونځی
-          - پوهنتون
+      providers:
+        description: لارښوونيزې چوپړتياوې
+  legend_panes:
+    show:
+      entries:
+        forest: ځنگل
+        park: پارک
+        lake: ډنډ
+        reservoir: زېرمتون
+        farm: کرونده
+        cemetery: هديره
+        military: پوځي سيمه
+        school: ښوونځی
+        university: پوهنتون
+  share_panes:
+    show:
+      downloading: راکښته‌کول...
   traces:
     new:
       visibility_help: دا څه مانا لري؟
@@ -398,26 +608,25 @@ ps:
     trace:
       view_map: نخشه کتل
       edit_map: نخشه سمول
-  oauth_clients:
-    show:
-      confirm: آيا تاسې ډاډه ياست؟
-    index:
-      application: کاريال نوم
+  application:
+    auth_providers:
+      apple:
+        title: ايپل سره ورننوتل
+        alt: ايپل نښان
+      github:
+        title: د گېټ هب له لارې ننوتل
+        alt: د يو گېټ هب گڼون له لارې ننوتل
   users:
     new:
       title: نومليکنه
-    terms:
-      decline: ردول
-      legale_names:
-        france: فرانسه
-        italy: اېټاليا
+      by_signing_up:
+        tou: کارولو منښتونه
     show:
       my edits: زما سمونونه
       my messages: زما پيغامونه
       send message: پيغام لېږل
       edits: سمونونه
-      add as friend: ملگری ورگډول
-      email address: 'برېښليک پته:'
+      email address: 'برېښليک‌پته:'
       status: 'دريځ:'
       block_history: فعاله بنديزونه
       moderator_history: لگېدلي بنديزونه
@@ -429,36 +638,58 @@ ps:
       unhide_user: دا کارن ښکاره کول
       delete_user: دا کارن ړنگول
       confirm: تاييد
-    index:
-      title: کارنان
-      heading: کارنان
-  user_role:
-    grant:
-      confirm: تاييد
-    revoke:
-      confirm: تاييد
+      edit_profile_details: پېژنيال سپيناوي سمول
+      edit_description: څرگنداوی سمول
+      edit_links: تړنې سمول
+      change_image: انځور بدلول
+      edit_company: کمپنۍ سمول
+      edit_location: ځای سمول
+    sidebar_section:
+      company: کمپنۍ
+    lists:
+      show:
+        title: کارنان
+        heading: کارنان
+    changeset_comments:
+      page:
+        when: کله
+        comment: تبصره
   user_blocks:
     show:
       created: جوړ شو
       status: دريځ
-      show: ښکاره کول
       edit: سمول
     block:
       show: ښکاره کول
       edit: سمول
-    blocks:
+    page:
       creator_name: جوړونکی
       status: دريځ
   notes:
+    index:
+      open: نااوار‌شوی
+      closed: اوار‌شوی
+      hidden: پټ‌شوی
     show:
       hide: پټول
       comment: تبصره
   javascripts:
+    share:
+      filename: نخچه
+    profile:
+      social_link_n: ټولنيزه پېژنيال وېبتړ %{n}
+      remove_social_link_n: د ټولنيزه پېژنيال وېبتړ %{n} لرې‌کول
     directions:
-      distance: واټن
+      errors:
+        no_place:
+          title: پلټل ناکام شو
       instructions:
         unnamed: بې نومه
-      time: وخت
+    element:
+      wikipedia: ويکيپېډيا
+    remote_edit:
+      failed:
+        title: سمون نابريالی شو
   redactions:
     show:
       description: 'څرگندونه:'

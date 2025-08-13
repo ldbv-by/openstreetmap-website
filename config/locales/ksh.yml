@@ -9,8 +9,6 @@ ksh:
     submit:
       diary_entry:
         create: Öffentlesch maache
-      client_application:
-        update: Lohß Jonn!
       trace:
         create: Huhlaade
   activerecord:
@@ -58,37 +56,34 @@ ksh:
         languages: Schprohche
         pass_crypt: Paßwoot
   accounts:
-    edit:
+    show:
       external auth: 'Donn övver en anndere Schtäll de Dahte för et Enlogge pröhve
         lasse:'
+    terms:
+      show:
+        legale_names:
+          france: Frangkrisch
+          italy: Ėtaaalije
+          rest_of_world: Dä Räß vun dä Wält
   browse:
     relation_member:
       type:
         node: Krüzpungk
-    not_found:
-      type:
-        node: Krüzpungk
-        way: Wääsch
     timeout:
       type:
         way: Wääsch
     start_rjs:
       load_data: Daate laade
-  changesets:
-    changeset_paging_nav:
-      next: Nächs »
-      previous: « Vörijje
-    changesets:
-      user: Metmaacher
   diary_entries:
     form:
       use_map_link: Landkaat bruche
     index:
       title: Metmaacher ier Dare_Bööscher
-      new: Ene neue Enndraach em Daarebooch
       no_entries: Kein Enndrääsch em Daarebooch
     edit:
       title: Enndraach em Daarebooch ändere
+    navigation:
+      new: Ene neue Enndraach em Daarebooch
   geocoder:
     search_osm_nominatim:
       prefix:
@@ -165,13 +160,11 @@ ksh:
           wadi: e Waadi, e drüsch Daal
           waterfall: ne Wasserfall
           weir: e Wehr
-      types:
-        cities: Jruße Schtädte
-        towns: Klein Schtädte
-        places: Dörper, Ööt, un Pläz
-    results:
-      no_results: Nix jefonge
-      more_results: Mih&nbsp;…
+  searches:
+    queries:
+      create:
+        no_results: Nix jefonge
+        more_results: Mih&nbsp;…
   layouts:
     logo:
       alt_text: Et Logo vun OpenStreetMap
@@ -189,146 +182,116 @@ ksh:
     confirm_email:
       heading: Donn en neue Adräß för de e-mail beschtäätejje
   messages:
-    inbox:
-      from: Vum
-      subject: Theema
-      date: Et Dattum
-      no_messages_yet_html: Do häs noch kein Nohreeschte krääje. Woröm deihs De nit
-        ens met dä Lück kalle, di %{people_mapping_nearby_link}?
-      people_mapping_nearby: en Dinge Nöhde och am Kaate maache sin
-    outbox:
-      no_sent_messages_html: Do häs noch kein Nohreeschte verscheck. Woröm deihs De
-        nit ens met dä Lück kalle, di %{people_mapping_nearby_link}?
     show:
       reply_button: Antwoot
-    sent_message_summary:
-      destroy_button: Fottschmiiße
+    mailboxes:
+      messages_table:
+        from: Vum
+        subject: Theema
+        date: Et Dattum
+    inboxes:
+      show:
+        no_messages_yet_html: Do häs noch kein Nohreeschte krääje. Woröm deihs De
+          nit ens met dä Lück kalle, di %{people_mapping_nearby_link}?
+        people_mapping_nearby: en Dinge Nöhde och am Kaate maache sin
+    outboxes:
+      show:
+        no_sent_messages_html: Do häs noch kein Nohreeschte verscheck. Woröm deihs
+          De nit ens met dä Lück kalle, di %{people_mapping_nearby_link}?
+      message:
+        destroy_button: Fottschmiiße
   passwords:
-    lost_password:
+    new:
       title: Verloore Paßwoot
       heading: Paßwoot verjäße?
       email address: 'De Adräß för de e-mail:'
       new password button: Paßwoot neu säze
-    reset_password:
+    edit:
       title: Paßwoot neu säze
       reset: Paßwoot neu säze
+    update:
       flash changed: Ding Paßwoot es jeändert.
   sessions:
     new:
-      title: Enlogge
-      heading: Enlogge
+      tab_title: Enlogge
       email or username: 'De Adräß för de e-mail udder der Metmaacher_Nahme:'
       password: 'Paßwoot:'
       lost password link: Paßwoot verschött jejange?
       login_button: Enlogge
-      auth_providers:
-        google:
-          title: Övver Google ennlogge
-          alt: Ennlogge medd ener OpenID vun Google
-        facebook:
-          title: Donn övver ene Zohjang op Facebook ennlogge
-          alt: Donn övver ene Zohjang op Facebook ennlogge
-        microsoft:
-          title: Donn medd enem Zohjang op Windows Live ennlogge
-          alt: Donn medd enem Zohjang op Windows Live ennlogge
-        github:
-          title: Övver GitHub ennlogge
-          alt: Donn övver ene Zohjang bei GitHub ennlogge
-        wordpress:
-          title: Övver Wordpress ennlogge
-        aol:
-          title: Övver AOL enlogge
   site:
-    about:
+    about_section:
       legal_title: Rääschlesch
     copyright:
       foreign:
         english_link: em Änglesche Ojinaal
       native:
         title: Övver di Sigg heh
-    edit:
+    not_public_flash:
       anon_edits_link_text: Fengk eruß, woröm dadd esu es.
-    export:
-      osm_xml_data: OpenStreetMap sing XML Daate
-      options: Ennschtällonge
     help:
       beginners_guide:
         title: Aanleidong för Aanfänger
       irc:
         title: IRC
-    sidebar:
-      close: Zohmaache
     search:
       search: Söhke
       where_am_i: Woh ben esch?
       where_am_i_title: Beschriev dä aktälle Plaz övver en Söhkmaschiin
       submit_text: Lohß Jonn!
-    key:
-      table:
-        entry:
-          motorway: Autobahn
-          trunk: Autoschnellstrohß
-          primary: Bundesstrohß
-          secondary: Land- un Kreisschtrohß
-          unclassified: Schtrohß
-          track: Wald- un Feldwääsch
-          bridleway: Wääsch för ze Rigge
-          cycleway: Farratwääsch
-          footway: Fohßwääsch udder Päddsche
-          rail: Eiserbahn
-          subway: U-Bahn
-          tram:
-          - Klëijnbahn
-          - Strohßebahn
-          cable:
-          - Seilbahn
-          - Sässelbahn
-          runway:
-          - Startbahn, Landebahn
-          - Rollwääsch om Fluchhaaven
-          apron:
-          - Halldepläz om Fluchveäld
-          - Terminal em Fluchhaaven
-          admin: Verwalldongsjränz
-          forest: Wald, Bösch
-          wood: Urwald
-          golf: Jolfplaz
-          park: Park
-          resident: Wohnjebeet
-          common:
-          - öffentlesch Land
-          - Wiß
-          retail: Einkaufszentrum
-          industrial: Industriejebeet
-          commercial: Jewerbejebeet
-          heathland: Heed
-          lake:
-          - See, Wejer
-          - Stausee
-          farm: Buurehoff
-          brownfield: Industriebrachland
-          cemetery: Friedhoff
-          allotments: Schreberjaade
-          pitch: Schpochtplaz
-          centre: Schpochtzäntom
-          reserve: Naturschozjebeet
-          military: Jebeet vum Kammiß
-          school:
-          - Scholl
-          - Univäsität
-          building: Weeschtesch Bouwärk
-          station: Bahnhoff
-          summit:
-          - Bärschspez
-          - Bärschspez
-          tunnel: Rand jeschtreschelt = Tunnell
-          bridge: Fätte Rand = Bröck
-          private: Der Zohjang es prėvaat
-          destination: Bloß för Aanliejer
-          construction: Schtrohß em Bou
     welcome:
       rules:
         title: Rääjelle!
+  legend_panes:
+    show:
+      entries:
+        motorway: Autobahn
+        trunk: Autoschnellstrohß
+        primary: Bundesstrohß
+        secondary: Land- un Kreisschtrohß
+        unclassified: Schtrohß
+        track: Wald- un Feldwääsch
+        bridleway: Wääsch för ze Rigge
+        cycleway: Farratwääsch
+        footway: Fohßwääsch udder Päddsche
+        rail: Eiserbahn
+        subway: U-Bahn
+        cable_car: Seilbahn
+        chair_lift: Sässelbahn
+        runway: Startbahn, Landebahn
+        taxiway: Rollwääsch om Fluchhaaven
+        apron: Halldepläz om Fluchveäld
+        admin: Verwalldongsjränz
+        forest: Wald, Bösch
+        wood: Urwald
+        golf: Jolfplaz
+        park: Park
+        common: öffentlesch Land
+        resident: Wohnjebeet
+        retail: Einkaufszentrum
+        industrial: Industriejebeet
+        commercial: Jewerbejebeet
+        heathland: Heed
+        lake: See, Wejer
+        reservoir: Stausee
+        farm: Buurehoff
+        brownfield: Industriebrachland
+        cemetery: Friedhoff
+        allotments: Schreberjaade
+        pitch: Schpochtplaz
+        centre: Schpochtzäntom
+        reserve: Naturschozjebeet
+        military: Jebeet vum Kammiß
+        school: Scholl
+        university: Univäsität
+        building: Weeschtesch Bouwärk
+        station: Bahnhoff
+        summit: Bärschspez
+        peak: Bärschspez
+        tunnel: Rand jeschtreschelt = Tunnell
+        bridge: Fätte Rand = Bröck
+        private: Der Zohjang es prėvaat
+        destination: Bloß för Aanliejer
+        construction: Schtrohß em Bou
   traces:
     new:
       help: Hölp
@@ -343,16 +306,12 @@ ksh:
       public: ÖFFENTLESCH
       private: PRĖVAAT
       trackable: NOHTRÄCKBAA
-      by: vum
-      in: en
     index:
       public_traces: Öffentlesche GPS-Opnahme
       public_traces_from: Öffentlesche GPS-Opnahme vum %{user}
       tagged_with: ' met %{tags} makeet'
     destroy:
       scheduled_for_deletion: Opnahm för fottzeschmiiße
-    make_public:
-      made_public: Öffentlesch jemaate Opnahm
     offline_warning:
       message: Dat Syßtehm för GPX-Datteije huhzelaade es em Momang nit ze bruche.
     offline:
@@ -364,29 +323,25 @@ ksh:
       cookies_needed: |-
         Et schingk, wi wann De cookies afjeschalldt häz.
         Bes esu jood un donn se en Dingem Brauser aanschallde, ih dat De wigger mähß.
-  oauth:
-    authorize:
-      allow_write_api: donn de Landkaat änndere
-      allow_read_gpx: donn de privaate eije GPS-Opnahme lässe
-      allow_write_gpx: GPS-Opnahme huhlaade
-  oauth_clients:
-    show:
-      edit: Einzelheite ändere
-    index:
-      revoke: Zeröckroofe!
+    auth_providers:
+      google:
+        title: Övver Google ennlogge
+        alt: Ennlogge medd ener OpenID vun Google
+      facebook:
+        title: Donn övver ene Zohjang op Facebook ennlogge
+        alt: Donn övver ene Zohjang op Facebook ennlogge
+      microsoft:
+        title: Donn medd enem Zohjang op Windows Live ennlogge
+        alt: Donn medd enem Zohjang op Windows Live ennlogge
+      github:
+        title: Övver GitHub ennlogge
+        alt: Donn övver ene Zohjang bei GitHub ennlogge
   users:
-    terms:
-      decline: Aflehne
-      legale_names:
-        france: Frangkrisch
-        italy: Ėtaaalije
-        rest_of_world: Dä Räß vun dä Wält
     no_such_user:
       title: Dä Metmaacher jidd_et nit
       heading: Mer han keine Metmaacher, dä „%{user} “ heiße däät.
     show:
       traces: Opnahme
-      remove as friend: uß dä Frünndschaffs-Leß nämme
       create_block: Donn heh dä Metmaacher schpärre
       activate_user: Donn heh dä Metmaacher aktevehre
       confirm_user: Donn heh dä Metmaacher beschtähtejje
@@ -396,7 +351,6 @@ ksh:
   user_blocks:
     show:
       created: Aanjelaat
-      show: Zeisch
   javascripts:
     embed:
       report_problem: Donn e Problehm mälde

@@ -2,12 +2,14 @@ require "test_helper"
 
 class InvalidCharsValidatable
   include ActiveModel::Validations
+
   validates :chars, :characters => true
   attr_accessor :chars
 end
 
 class InvalidUrlCharsValidatable
   include ActiveModel::Validations
+
   validates :chars, :characters => { :url_safe => true }
   attr_accessor :chars
 end
@@ -36,7 +38,7 @@ class CharactersValidatorTest < ActiveSupport::TestCase
 
     invalid.each do |v|
       c.chars = v
-      assert_not c.valid?, "'#{v}' should not be valid"
+      assert_not_predicate c, :valid?, "'#{v}' should not be valid"
     end
   end
 
@@ -60,7 +62,7 @@ class CharactersValidatorTest < ActiveSupport::TestCase
 
     invalid.each do |v|
       c.chars = v
-      assert_not c.valid?, "'#{v}' should not be valid"
+      assert_not_predicate c, :valid?, "'#{v}' should not be valid"
     end
   end
 end

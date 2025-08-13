@@ -1,5 +1,5 @@
 class DashboardsController < ApplicationController
-  layout "site"
+  layout :site_layout
 
   before_action :authorize_web
   before_action :set_locale
@@ -9,6 +9,7 @@ class DashboardsController < ApplicationController
   before_action :check_database_readable
 
   def show
-    @user = current_user
+    @followings = current_user.followings
+    @nearby_users = current_user.nearby - @followings
   end
 end

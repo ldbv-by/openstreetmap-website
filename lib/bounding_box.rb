@@ -88,6 +88,14 @@ class BoundingBox
     end
   end
 
+  def linear_size
+    if complete?
+      (max_lon - min_lon) + (max_lat - min_lat)
+    else
+      0
+    end
+  end
+
   def complete?
     to_a.exclude?(nil)
   end
@@ -132,17 +140,17 @@ class BoundingBox
   end
 
   def to_scaled
-    BoundingBox.new((min_lon * GeoRecord::SCALE),
-                    (min_lat * GeoRecord::SCALE),
-                    (max_lon * GeoRecord::SCALE),
-                    (max_lat * GeoRecord::SCALE))
+    BoundingBox.new(min_lon * GeoRecord::SCALE,
+                    min_lat * GeoRecord::SCALE,
+                    max_lon * GeoRecord::SCALE,
+                    max_lat * GeoRecord::SCALE)
   end
 
   def to_unscaled
-    BoundingBox.new((min_lon / GeoRecord::SCALE),
-                    (min_lat / GeoRecord::SCALE),
-                    (max_lon / GeoRecord::SCALE),
-                    (max_lat / GeoRecord::SCALE))
+    BoundingBox.new(min_lon / GeoRecord::SCALE,
+                    min_lat / GeoRecord::SCALE,
+                    max_lon / GeoRecord::SCALE,
+                    max_lat / GeoRecord::SCALE)
   end
 
   def to_a

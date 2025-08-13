@@ -8,10 +8,11 @@ concurrency:
 jobs:
   test:
     name: Docker
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
     - name: Checkout source
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: Poke config
       run: |
         cp config/example.storage.yml config/storage.yml
@@ -27,7 +28,7 @@ jobs:
     - name: Prepare Database
       run: |
         docker compose run --rm web bundle exec rails db:migrate
-        docker compose run --rm web bundle exec rails i18n:js:export
+        docker compose run --rm web bundle exec i18n export
         docker compose run --rm web bundle exec rails assets:precompile
         docker compose run --rm web osmosis --rx docker/null-island.osm.xml --wd host=db database=openstreetmap user=openstreetmap password=openstreetmap validateSchemaVersion=no
     - name: Test Basic Website

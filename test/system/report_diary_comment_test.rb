@@ -8,7 +8,7 @@ class ReportDiaryCommentTest < ApplicationSystemTestCase
   end
 
   def test_no_link_when_not_logged_in
-    visit diary_entry_path(@diary_entry.user.display_name, @diary_entry)
+    visit diary_entry_path(@diary_entry.user, @diary_entry)
     assert_content @comment.body
 
     assert_no_content I18n.t("diary_entries.diary_comment.report")
@@ -16,17 +16,17 @@ class ReportDiaryCommentTest < ApplicationSystemTestCase
 
   def test_it_works
     sign_in_as(create(:user))
-    visit diary_entry_path(@diary_entry.user.display_name, @diary_entry)
+    visit diary_entry_path(@diary_entry.user, @diary_entry)
     assert_content @diary_entry.title
 
-    click_link I18n.t("diary_entries.diary_comment.report")
+    click_on I18n.t("diary_entries.diary_comment.report")
     assert_content "Report"
     assert_content I18n.t("reports.new.disclaimer.intro")
 
     choose I18n.t("reports.new.categories.diary_comment.spam_label")
     fill_in "report_details", :with => "This comment is spam"
     assert_difference "Issue.count", 1 do
-      click_button "Create Report"
+      click_on "Create Report"
     end
 
     assert_content "Your report has been registered successfully"

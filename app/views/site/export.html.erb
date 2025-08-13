@@ -2,17 +2,17 @@
 
 <%= render "sidebar_header", :title => t(".title") %>
 
-<%= form_tag({ :controller => "export", :action => "finish" }, { :class => "export_form" }) do %>
+<%= form_tag({ :controller => "export", :action => "finish" }, :class => "export_form", :data => { "turbo" => true }) do %>
   <%= hidden_field_tag "format", "osm", :autocomplete => "off" %>
 
-  <div class='export_area_inputs'>
-    <div class='export_boxy border border-grey rounded'>
-      <%= text_field_tag("maxlat", nil, :size => 10, :autocomplete => "off", :class => "export_bound form-control mx-auto") %>
-      <div class="clearfix">
-        <%= text_field_tag("minlon", nil, :size => 10, :autocomplete => "off", :class => "export_bound form-control my-2") %>
-        <%= text_field_tag("maxlon", nil, :size => 10, :autocomplete => "off", :class => "export_bound form-control my-2") %>
+  <div class='export_area_inputs text-center mb-3'>
+    <div class='export_boxy border border-secondary-subtle rounded bg-body-secondary' dir='ltr'>
+      <%= text_field_tag("maxlat", nil, :size => 10, :autocomplete => "off", :class => "form-control text-center mx-auto") %>
+      <div class="d-flex justify-content-between">
+        <%= text_field_tag("minlon", nil, :size => 10, :autocomplete => "off", :class => "form-control text-center my-2") %>
+        <%= text_field_tag("maxlon", nil, :size => 10, :autocomplete => "off", :class => "form-control text-center my-2") %>
       </div>
-      <%= text_field_tag("minlat", nil, :size => 10, :autocomplete => "off", :class => "export_bound form-control mx-auto") %>
+      <%= text_field_tag("minlat", nil, :size => 10, :autocomplete => "off", :class => "form-control text-center mx-auto") %>
       </div>
     <a id='drag_box' href="#"><%= t ".manually_select" %></a>
   </div>
@@ -28,7 +28,7 @@
 
   <div id="export_commit">
     <div class="mb-3 d-flex">
-      <%= submit_tag t(".export_button"), :class => "btn btn-primary mx-auto" %>
+      <%= submit_tag t(".export_button"), :class => "btn btn-primary mx-auto", :data => { "turbo-submits-with" => t(".export_download") } %>
     </div>
   </div>
 

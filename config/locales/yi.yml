@@ -60,24 +60,27 @@ yi:
     remote:
       name: ווייטקאנטראל
       description: ווייטקאנטראל (JOSM אדער Merkaartor)
-  account:
+  accounts:
     deletions:
       show:
         cancel: אַנולירן
+    terms:
+      show:
+        legale_select: 'וואוין־לאנד:'
   browse:
-    created: געשאַפֿן
-    closed: געשלאסן
     version: ווערסיע
     anonymous: אַנאנים
     no_comment: (קיין הערות)
     part_of: טייל פֿון
     download_xml: אראפלאדן XML
-    view_history: ווייזן היסטאָריע
-    view_details: ווייזן פרטים
     location: 'לאקאציע:'
   changesets:
-    changeset_paging_nav:
-      showing_page: בלאַט %{page}
+    index:
+      feed:
+        created: געשאַפֿן
+        closed: געשלאסן
+    show:
+      hide_comment: באַהאַלטן
   geocoder:
     search_osm_nominatim:
       prefix:
@@ -101,8 +104,6 @@ yi:
     home: גיין צו היים לאקאציע
     history: היסטאָריע
     export: עקספארט
-    data: דאטן
-    export_data: עקספארטירן דאטן
     help: הילף
     about: וועגן
     more: נאָך
@@ -110,18 +111,18 @@ yi:
     confirm:
       heading: קאנטראלירט אײַער ע־פאסט!
   messages:
-    message_summary:
-      destroy_button: אויסמעקן
     show:
       back: צוריק
-    sent_message_summary:
-      destroy_button: אויסמעקן
-  preferences:
-    edit:
-      cancel: אַנולירן
+    mailboxes:
+      message:
+        destroy_button: אויסמעקן
+    outboxes:
+      message:
+        destroy_button: אויסמעקן
   profiles:
-    edit:
-      cancel: אַנולירן
+    descriptions:
+      show:
+        cancel: אַנולירן
   sessions:
     new:
       password: 'פאַסווארט:'
@@ -135,6 +136,15 @@ yi:
       submit_text: גיין
     welcome:
       title: ברוך הבא!
+  share_panes:
+    show:
+      link: לינק אדער HTML
+      long_link: לינק
+      embed: HTML
+      image: בילד
+      format: 'פֿאָרמאַט:'
+      scale: 'סקאלע:'
+      download: אַראָפלאָדן
   traces:
     new:
       help: הילף
@@ -146,35 +156,14 @@ yi:
     new:
       title: אײַנשרייבן
       continue: אײַנשרייבן
-    terms:
-      legale_select: 'וואוין־לאנד:'
-  user_role:
-    grant:
-      confirm: באַשטעטיקן
-    revoke:
-      confirm: באַשטעטיקן
-  user_blocks:
-    blocks:
-      showing_page: בלאַט %{page}
   notes:
     show:
       hide: באַהאַלטן
+    notes_paging_nav:
+      showing_page: בלאַט %{page}
   javascripts:
     share:
-      cancel: אַנולירן
-      image: בילד
-      link: לינק אדער HTML
-      long_link: לינק
-      embed: HTML
-      format: 'פֿאָרמאַט:'
-      scale: 'סקאלע:'
-      download: אַראָפלאָדן
-      short_url: קורץ URL
-      center_marker: צענטרירן מאפע אויף מארקירונג
       view_larger_map: באקוקן גרעסערע מאפע
-    changesets:
-      show:
-        hide_comment: באַהאַלטן
     context:
       show_address: ווײַזן אדרעס
 ...

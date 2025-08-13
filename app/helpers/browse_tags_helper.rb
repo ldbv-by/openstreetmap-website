@@ -1,7 +1,7 @@
 module BrowseTagsHelper
   # https://wiki.openstreetmap.org/wiki/Key:wikipedia#Secondary_Wikipedia_links
   # https://wiki.openstreetmap.org/wiki/Key:wikidata#Secondary_Wikidata_links
-  SECONDARY_WIKI_PREFIXES = "architect|artist|brand|flag|genus|name:etymology|network|operator|species|subject".freeze
+  SECONDARY_WIKI_PREFIXES = "architect|artist|brand|buried|flag|genus|manufacturer|model|name:etymology|network|operator|species|subject".freeze
 
   def format_key(key)
     if url = wiki_link("key", key)
@@ -17,10 +17,16 @@ module BrowseTagsHelper
     elsif wdt = wikidata_links(key, value)
       # IMPORTANT: Note that wikidata_links() returns an array of hashes, unlike for example wikipedia_link(),
       # which just returns one such hash.
+      svg = button_tag :type => "button", :role => "button", :class => "btn btn-link float-end d-flex m-1 mt-0 me-n1 border-0 p-0 wdt-preview", :data => { :qids => wdt.pluck(:title) } do
+        tag.svg :width => 27, :height => 16 do
+          concat tag.title t("browse.tag_details.wikidata_preview", :count => wdt.length)
+          concat tag.path :fill => "currentColor", :d => "M0 16h1V0h-1Zm2 0h3V0h-3Zm4 0h3V0h-3Zm4 0h1V0h-1Zm2 0h1V0h-1Zm2 0h3V0h-3Zm4 0h1V0h-1Zm2 0h3V0h-3Zm4 0h1V0h-1Zm2 0h1V0h-1Z"
+        end
+      end
       wdt = wdt.map do |w|
         link_to(w[:title], w[:url], :title => t("browse.tag_details.wikidata_link", :page => w[:title].strip))
       end
-      safe_join(wdt, ";")
+      svg + safe_join(wdt, ";")
     elsif wmc = wikimedia_commons_link(key, value)
       link_to h(wmc[:title]), wmc[:url], :title => t("browse.tag_details.wikimedia_commons_link", :page => wmc[:title])
     elsif url = wiki_link("tag", "#{key}=#{value}")
@@ -34,9 +40,13 @@ module BrowseTagsHelper
       end
       safe_join(phones, "; ")
     elsif colour_value = colour_preview(key, value)
-      tag.span("", :class => "colour-preview-box", :"data-colour" => colour_value, :title => t("browse.tag_details.colour_preview", :colour_value => colour_value)) + colour_value
+      svg = tag.svg :width => 14, :height => 14, :class => "float-end m-1" do
+        concat tag.title t("browse.tag_details.colour_preview", :colour_value => colour_value)
+        concat tag.rect :x => 0.5, :y => 0.5, :width => 13, :height => 13, :fill => colour_value, :stroke => "#2222"
+      end
+      svg + colour_value
     else
-      safe_join(value.split(";").map { |x| linkify(h(x)) }, ";")
+      safe_join(value.split(";", -1).map { |x| tag2link_link(key, x) || linkify(h(x)) }, ";")
     end
   end
 
@@ -65,39 +75,31 @@ module BrowseTagsHelper
 
     case key
     when "wikipedia", /^(#{SECONDARY_WIKI_PREFIXES}):wikipedia/o
-      # This regex should match Wikipedia language codes, everything
-      # from de to zh-classical
-      lang = if value =~ /^([a-z-]{2,12}):(.+)$/i
-               # Value is <lang>:<title> so split it up
-               # Note that value is always left as-is, see: https://trac.openstreetmap.org/ticket/4315
-               Regexp.last_match(1)
-             else
-               # Value is <title> so default to English Wikipedia
-               "en"
-             end
+      lang = "en"
     when /^wikipedia:(\S+)$/
-      # Language is in the key, so assume value is the title
       lang = Regexp.last_match(1)
     else
-      # Not a wikipedia key!
       return nil
     end
 
-    if value =~ /^([^#]*)#(.*)/
-      # Contains a reference to a section of the wikipedia article
-      # Must break it up to correctly build the url
-      value = Regexp.last_match(1)
-      section = "##{Regexp.last_match(2)}"
-      encoded_section = "##{CGI.escape(Regexp.last_match(2).gsub(/ +/, '_'))}"
+    # This regex should match Wikipedia language codes, everything
+    # from de to zh-classical
+    if value =~ /^([a-z-]{2,12}):(.+)$/i
+      lang = Regexp.last_match(1)
+      title_section = Regexp.last_match(2)
     else
-      section = ""
-      encoded_section = ""
+      title_section = value
     end
 
-    {
-      :url => "https://#{lang}.wikipedia.org/wiki/#{value}?uselang=#{I18n.locale}#{encoded_section}",
-      :title => value + section
-    }
+    title, section = title_section.split("#", 2)
+    url = "https://#{lang}.wikipedia.org/wiki/#{wiki_encode(title)}?uselang=#{I18n.locale}"
+    url += "##{wiki_encode(section)}" if section
+
+    { :url => url, :title => value }
+  end
+
+  def wiki_encode(s)
+    u s.tr(" ", "_")
   end
 
   def wikidata_links(key, value)
@@ -120,13 +122,24 @@ module BrowseTagsHelper
   end
 
   def wikimedia_commons_link(key, value)
-    if key == "wikimedia_commons" && value =~ /^(?:file|category):/i
+    if key == "wikimedia_commons" && value =~ /^(file|category):([^#]+)/i
+      namespace = Regexp.last_match(1)
+      title = Regexp.last_match(2)
       return {
-        :url => "//commons.wikimedia.org/wiki/#{value}?uselang=#{I18n.locale}",
+        :url => "//commons.wikimedia.org/wiki/#{namespace}:#{u title}?uselang=#{I18n.locale}",
         :title => value
       }
     end
     nil
+  end
+
+  def tag2link_link(key, value)
+    # skip if it's a full URL
+    return nil if %r{^https?://}.match?(value)
+
+    return nil unless TAG2LINK[key]
+
+    link_to(h(value), TAG2LINK[key].gsub("$1", value), :rel => "nofollow")
   end
 
   def email_link(key, value)

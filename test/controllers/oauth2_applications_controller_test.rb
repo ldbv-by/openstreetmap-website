@@ -43,7 +43,6 @@ class Oauth2ApplicationsControllerTest < ActionDispatch::IntegrationTest
     create_list(:oauth_application, 2, :owner => user)
 
     get oauth_applications_path
-    assert_response :redirect
     assert_redirected_to login_path(:referer => oauth_applications_path)
 
     session_for(user)
@@ -54,11 +53,20 @@ class Oauth2ApplicationsControllerTest < ActionDispatch::IntegrationTest
     assert_select "tbody tr", 2
   end
 
+  def test_index_with_moderator_app
+    user = create(:user)
+    create(:oauth_application, :owner => user, :scopes => "write_redactions")
+
+    session_for(user)
+
+    get oauth_applications_path
+    assert_response :success
+  end
+
   def test_new
     user = create(:user)
 
     get new_oauth_application_path
-    assert_response :redirect
     assert_redirected_to login_path(:referer => new_oauth_application_path)
 
     session_for(user)
@@ -66,7 +74,7 @@ class Oauth2ApplicationsControllerTest < ActionDispatch::IntegrationTest
     get new_oauth_application_path
     assert_response :success
     assert_template "oauth2_applications/new"
-    assert_select "form", 1 do
+    assert_select "#content form", 1 do
       assert_select "input#oauth2_application_name", 1
       assert_select "textarea#oauth2_application_redirect_uri", 1
       assert_select "input#oauth2_application_confidential", 1
@@ -111,7 +119,6 @@ class Oauth2ApplicationsControllerTest < ActionDispatch::IntegrationTest
                                      :scopes => ["read_prefs"]
                                    })
     end
-    assert_response :redirect
     assert_redirected_to oauth_application_path(:id => Doorkeeper::Application.find_by(:name => "Test Application").id)
   end
 
@@ -137,7 +144,6 @@ class Oauth2ApplicationsControllerTest < ActionDispatch::IntegrationTest
                                      :scopes => ["read_email"]
                                    })
     end
-    assert_response :redirect
     assert_redirected_to oauth_application_path(:id => Doorkeeper::Application.find_by(:name => "Test Application").id)
   end
 
@@ -147,7 +153,6 @@ class Oauth2ApplicationsControllerTest < ActionDispatch::IntegrationTest
     other_client = create(:oauth_application)
 
     get oauth_application_path(:id => client)
-    assert_response :redirect
     assert_redirected_to login_path(:referer => oauth_application_path(:id => client.id))
 
     session_for(user)
@@ -167,7 +172,6 @@ class Oauth2ApplicationsControllerTest < ActionDispatch::IntegrationTest
     other_client = create(:oauth_application)
 
     get edit_oauth_application_path(:id => client)
-    assert_response :redirect
     assert_redirected_to login_path(:referer => edit_oauth_application_path(:id => client.id))
 
     session_for(user)
@@ -179,7 +183,7 @@ class Oauth2ApplicationsControllerTest < ActionDispatch::IntegrationTest
     get edit_oauth_application_path(:id => client)
     assert_response :success
     assert_template "oauth2_applications/edit"
-    assert_select "form", 1 do
+    assert_select "#content form", 1 do
       assert_select "input#oauth2_application_name", 1
       assert_select "textarea#oauth2_application_redirect_uri", 1
       assert_select "input#oauth2_application_confidential", 1
@@ -216,7 +220,6 @@ class Oauth2ApplicationsControllerTest < ActionDispatch::IntegrationTest
                                  :name => "New Name",
                                  :redirect_uri => "https://new.example.com/url"
                                })
-    assert_response :redirect
     assert_redirected_to oauth_application_path(:id => client.id)
   end
 
@@ -241,7 +244,6 @@ class Oauth2ApplicationsControllerTest < ActionDispatch::IntegrationTest
     assert_difference "Doorkeeper::Application.count", -1 do
       delete oauth_application_path(:id => client)
     end
-    assert_response :redirect
     assert_redirected_to oauth_applications_path
   end
 end

@@ -122,12 +122,20 @@ search:
 ignore_unused:
   - 'geocoder.search_osm_nominatim.prefix.*'
   - 'javascripts.*'
+  - 'doorkeeper.*'
+  - 'users.auth_failure.*'   # OmniAuth provider callback error messages
   - 'activerecord.attributes.*'
   - 'activerecord.models.*'
   - 'activerecord.help.*'
   - 'helpers.submit.*'
   - 'datetime.distance_in_words_ago.*'
   - 'reports.new.categories.*' # double interpolation in reports_helper
+  - 'shared.pagination.*'
+  - 'auth.providers.*'
+  - 'time.formats.blog' # used for formatting blog dates
+  - 'time.formats.friendly' # used for formatting dates / times in a friendly way
+  - 'activerecord.errors.models.user_mute.attributes.subject.format' # used for formatting error message during validation in user_mute.rb
+  - 'activerecord.errors.models.user_mute.is_already_muted' # used as part of error message during validation in user_mute.rb
 # - '{devise,kaminari,will_paginate}.*'
 # - 'simple_form.{yes,no}'
 # - 'simple_form.{placeholders,hints,labels}.*'

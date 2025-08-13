@@ -1,26 +1,16 @@
-<% if flash[:error] %>
-  <div class="alert alert-danger row mx-0 mb-0 p-3 rounded-0 align-items-center">
-    <div class="col-auto">
-      <%= image_tag("notice.png", :srcset => image_path("notice.svg")) %>
-    </div>
-    <div class="col"><%= render_flash(flash[:error]) %></div>
-  </div>
-<% end %>
-
-<% if flash[:warning] %>
-  <div class="alert alert-warning row mx-0 mb-0 p-3 rounded-0 align-items-center">
-    <div class="col-auto">
-      <%= image_tag("notice.png", :srcset => image_path("notice.svg")) %>
-    </div>
-    <div class="col"><%= render_flash(flash[:warning]) %></div>
-  </div>
-<% end %>
-
-<% if flash[:notice] %>
-  <div class="alert alert-success row mx-0 mb-0 p-3 rounded-0 align-items-center">
-    <div class="col-auto">
-      <%= image_tag("notice.png", :srcset => image_path("notice.svg")) %>
-    </div>
-    <div class="col"><%= render_flash(flash[:notice]) %></div>
-  </div>
+<% [[:error, :danger], [:warning, :warning], [:notice, :success]].each do |flash_type, bootstrap_type| %>
+  <% if flash[flash_type] %>
+    <%= tag.div :class => "alert alert-dismissible alert-#{bootstrap_type} mb-0 rounded-0",
+                :data => { :turbo_temporary => true } do %>
+      <div class="d-flex gap-3 align-items-center">
+        <div class="d-flex">
+          <%= inline_svg_tag "icons/notice.svg" %>
+        </div>
+        <div>
+          <%= render_flash flash[flash_type] %>
+        </div>
+      </div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="<%= t("javascripts.close") %>"></button>
+    <% end %>
+  <% end %>
 <% end %>

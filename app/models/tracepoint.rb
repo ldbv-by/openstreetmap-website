@@ -26,7 +26,6 @@ class Tracepoint < ApplicationRecord
   self.table_name = "gps_points"
 
   validates :trackid, :numericality => { :only_integer => true }
-  #validates :latitude, :longitude, :numericality => { :only_integer => true }
   validates :trace, :associated => true
   validates :timestamp, :presence => true
 

@@ -1,32 +1,17 @@
-<% changeset_data = { :id => changeset.id }
-
-   if changeset.bbox_valid?
-     bbox = changeset.bbox.to_unscaled
-     changeset_data[:bbox] = {
-       :minlon => bbox.min_lon,
-       :minlat => bbox.min_lat,
-       :maxlon => bbox.max_lon,
-       :maxlat => bbox.max_lat
-     }
-   end %>
-
-<%= tag.li :id => "changeset_#{changeset.id}", :data => { :changeset => changeset_data }, :class => "list-group-item" do %>
-  <p class="fst-italic">
-    <a class="changeset_id text-dark stretched-link" href="<%= changeset_path(changeset) %>">
-      <span><%= changeset.tags["comment"].to_s.presence || t("browse.no_comment") %></span>
-    </a>
+<%= tag.li :id => "changeset_#{changeset.id}", :data => { :changeset => changeset_data(changeset) }, :class => "list-group-item list-group-item-action" do %>
+  <p class="fs-6 text-truncate text-wrap mb-2">
+    <%= link_to changeset, :class => "changeset_id link-body-emphasis stretched-link" do %>
+      <bdi><%= changeset.tags["comment"].to_s.presence || t("browse.no_comment") %></bdi>
+    <% end %>
   </p>
-  <div class="row">
-    <div class="col">
-      <%= changeset_details(changeset) %>
-      &middot;
-      <a class="changeset_id text-dark" href="<%= changeset_path(changeset) %>">
-        #<%= changeset.id %>
-      </a>
-    </div>
-    <div class="col-auto text-secondary<%= " opacity-50" if changeset.comments.empty? %>">
-      <%= changeset.comments.length %>
-      <span class="icon note grey"></span>
-    </div>
+
+  <div class="overflow-hidden">
+    <%= changeset_details(changeset) %>
+  </div>
+
+  <div class="me-n1">
+    <%= render "changeset_line", :changeset => changeset do %>
+      #<%= link_to changeset.id, changeset, :class => "changeset_id link-body-emphasis" %>
+    <% end %>
   </div>
 <% end %>
