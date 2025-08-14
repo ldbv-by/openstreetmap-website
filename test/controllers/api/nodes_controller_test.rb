@@ -280,8 +280,8 @@ module Api
 
       get api_node_path(node)
 
-      assert_match(/lat="0.0000400"/, response.body)
-      assert_match(/lon="0.0000800"/, response.body)
+      assert_match(/lat="0.0000400000"/, response.body)
+      assert_match(/lon="0.0000800000"/, response.body)
     end
 
     def test_destroy_when_unauthorized

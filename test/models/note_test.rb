@@ -78,7 +78,7 @@ class NoteTest < ActiveSupport::TestCase
   def test_lat_lon_format
     note = build(:note, :latitude => 0.00004 * GeoRecord::SCALE, :longitude => 0.00008 * GeoRecord::SCALE)
 
-    assert_equal "0.0000400", note.lat.to_s
-    assert_equal "0.0000800", note.lon.to_s
+    assert_equal "0.0000400000", note.lat.to_s
+    assert_equal "0.0000800000", note.lon.to_s
   end
 end

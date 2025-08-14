@@ -35,13 +35,13 @@ module Api
         assert_dom "> node", 2 do |dom_nodes|
           assert_dom dom_nodes[0], "> @id", node.id.to_s
           assert_dom dom_nodes[0], "> @version", "1"
-          assert_dom dom_nodes[0], "> @lat", "60.0000000"
-          assert_dom dom_nodes[0], "> @lon", "30.0000000"
+          assert_dom dom_nodes[0], "> @lat", "60.0000000000"
+          assert_dom dom_nodes[0], "> @lon", "30.0000000000"
 
           assert_dom dom_nodes[1], "> @id", node.id.to_s
           assert_dom dom_nodes[1], "> @version", "2"
-          assert_dom dom_nodes[1], "> @lat", "61.0000000"
-          assert_dom dom_nodes[1], "> @lon", "31.0000000"
+          assert_dom dom_nodes[1], "> @lat", "61.0000000000"
+          assert_dom dom_nodes[1], "> @lon", "31.0000000000"
         end
       end
     end
@@ -112,8 +112,8 @@ module Api
         assert_dom "> node", 1 do
           assert_dom "> @id", node.id.to_s
           assert_dom "> @version", "1"
-          assert_dom "> @lat", "60.0000000"
-          assert_dom "> @lon", "30.0000000"
+          assert_dom "> @lat", "60.0000000000"
+          assert_dom "> @lon", "30.0000000000"
         end
       end
 
@@ -124,8 +124,8 @@ module Api
         assert_dom "> node", 1 do
           assert_dom "> @id", node.id.to_s
           assert_dom "> @version", "2"
-          assert_dom "> @lat", "61.0000000"
-          assert_dom "> @lon", "31.0000000"
+          assert_dom "> @lat", "61.0000000000"
+          assert_dom "> @lon", "31.0000000000"
         end
       end
     end
@@ -185,8 +185,8 @@ module Api
       old_node = create(:old_node, :latitude => (0.00004 * OldNode::SCALE).to_i, :longitude => (0.00008 * OldNode::SCALE).to_i)
 
       get api_node_versions_path(old_node.node_id)
-      assert_match(/lat="0.0000400"/, response.body)
-      assert_match(/lon="0.0000800"/, response.body)
+      assert_match(/lat="0.0000400000"/, response.body)
+      assert_match(/lon="0.0000800000"/, response.body)
     end
 
     private

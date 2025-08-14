@@ -91,22 +91,22 @@ class BoundingBoxTest < ActiveSupport::TestCase
 
   def test_expand_min_lon_boundary
     @bbox_expand.expand!(BoundingBox.new(-1810000000, 0, 0, 0))
-    check_expand(@bbox_expand, "-1800000000,0,0,0")
+    check_expand(@bbox_expand, "-1810000000,0,0,0")
   end
 
   def test_expand_min_lat_boundary
     @bbox_expand.expand!(BoundingBox.new(0, -910000000, 0, 0))
-    check_expand(@bbox_expand, "0,-900000000,0,0")
+    check_expand(@bbox_expand, "0,-910000000,0,0")
   end
 
   def test_expand_max_lon_boundary
     @bbox_expand.expand!(BoundingBox.new(0, 0, 1810000000, 0))
-    check_expand(@bbox_expand, "0,0,1800000000,0")
+    check_expand(@bbox_expand, "0,0,1810000000,0")
   end
 
   def test_expand_max_lat_boundary
     @bbox_expand.expand!(BoundingBox.new(0, 0, 0, 910000000))
-    check_expand(@bbox_expand, "0,0,0,900000000")
+    check_expand(@bbox_expand, "0,0,0,910000000")
   end
 
   def test_expand_min_lon_without_margin

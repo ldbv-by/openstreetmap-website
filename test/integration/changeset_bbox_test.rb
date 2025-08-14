@@ -25,10 +25,10 @@ class ChangesetBboxTest < ActionDispatch::IntegrationTest
     # get the bounding box back from the changeset
     get api_changeset_path(changeset_id)
     assert_response :success, "Couldn't read back changeset."
-    assert_dom "osm>changeset[min_lon='0.1000000']", 1
-    assert_dom "osm>changeset[max_lon='0.1000000']", 1
-    assert_dom "osm>changeset[min_lat='0.2000000']", 1
-    assert_dom "osm>changeset[max_lat='0.2000000']", 1
+    assert_dom "osm>changeset[min_lon='0.1000000000']", 1
+    assert_dom "osm>changeset[max_lon='0.1000000000']", 1
+    assert_dom "osm>changeset[min_lat='0.2000000000']", 1
+    assert_dom "osm>changeset[max_lat='0.2000000000']", 1
 
     # add another node to it
     with_controller(NodesController.new) do
@@ -40,10 +40,10 @@ class ChangesetBboxTest < ActionDispatch::IntegrationTest
     # get the bounding box back from the changeset
     get api_changeset_path(changeset_id)
     assert_response :success, "Couldn't read back changeset for the second time."
-    assert_dom "osm>changeset[min_lon='0.1000000']", 1
-    assert_dom "osm>changeset[max_lon='0.2000000']", 1
-    assert_dom "osm>changeset[min_lat='0.1000000']", 1
-    assert_dom "osm>changeset[max_lat='0.2000000']", 1
+    assert_dom "osm>changeset[min_lon='0.1000000000']", 1
+    assert_dom "osm>changeset[max_lon='0.2000000000']", 1
+    assert_dom "osm>changeset[min_lat='0.1000000000']", 1
+    assert_dom "osm>changeset[max_lat='0.2000000000']", 1
 
     # add (delete) a way to it, which contains a point at (3,3)
     with_controller(WaysController.new) do
@@ -55,10 +55,10 @@ class ChangesetBboxTest < ActionDispatch::IntegrationTest
     # get the bounding box back from the changeset
     get api_changeset_path(changeset_id)
     assert_response :success, "Couldn't read back changeset for the third time."
-    assert_dom "osm>changeset[min_lon='0.1000000']", 1
-    assert_dom "osm>changeset[max_lon='0.3000000']", 1
-    assert_dom "osm>changeset[min_lat='0.1000000']", 1
-    assert_dom "osm>changeset[max_lat='0.3000000']", 1
+    assert_dom "osm>changeset[min_lon='0.1000000000']", 1
+    assert_dom "osm>changeset[max_lon='0.3000000000']", 1
+    assert_dom "osm>changeset[min_lat='0.1000000000']", 1
+    assert_dom "osm>changeset[max_lat='0.3000000000']", 1
   end
 
   ##
@@ -226,10 +226,10 @@ class ChangesetBboxTest < ActionDispatch::IntegrationTest
       assert_response :success, "can't re-read changeset for modify test"
       assert_select "osm>changeset", 1, "Changeset element doesn't exist in #{@response.body}"
       assert_select "osm>changeset[id='#{changeset_id}']", 1, "Changeset id=#{changeset_id} doesn't exist in #{@response.body}"
-      assert_select "osm>changeset[min_lon='#{format('%<lon>.7f', :lon => bbox.min_lon)}']", 1, "Changeset min_lon wrong in #{@response.body}"
-      assert_select "osm>changeset[min_lat='#{format('%<lat>.7f', :lat => bbox.min_lat)}']", 1, "Changeset min_lat wrong in #{@response.body}"
-      assert_select "osm>changeset[max_lon='#{format('%<lon>.7f', :lon => bbox.max_lon)}']", 1, "Changeset max_lon wrong in #{@response.body}"
-      assert_select "osm>changeset[max_lat='#{format('%<lat>.7f', :lat => bbox.max_lat)}']", 1, "Changeset max_lat wrong in #{@response.body}"
+      assert_select "osm>changeset[min_lon='#{format('%<lon>.10f', :lon => bbox.min_lon)}']", 1, "Changeset min_lon wrong in #{@response.body}"
+      assert_select "osm>changeset[min_lat='#{format('%<lat>.10f', :lat => bbox.min_lat)}']", 1, "Changeset min_lat wrong in #{@response.body}"
+      assert_select "osm>changeset[max_lon='#{format('%<lon>.10f', :lon => bbox.max_lon)}']", 1, "Changeset max_lon wrong in #{@response.body}"
+      assert_select "osm>changeset[max_lat='#{format('%<lat>.10f', :lat => bbox.max_lat)}']", 1, "Changeset max_lat wrong in #{@response.body}"
     end
   end
 

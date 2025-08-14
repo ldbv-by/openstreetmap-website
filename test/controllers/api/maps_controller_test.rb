@@ -260,7 +260,7 @@ module Api
       get api_map_path(:bbox => "179.998,89.998,179.999.1,89.999")
       assert_response :success, "The map call should have succeeded"
       assert_select "osm[version='#{Settings.api_version}'][generator='#{Settings.generator}']", :count => 1 do
-        assert_select "bounds[minlon='179.9980000'][minlat='89.9980000'][maxlon='179.9990000'][maxlat='89.9990000']", :count => 1
+        assert_select "bounds[minlon='179.9980000000'][minlat='89.9980000000'][maxlon='179.9990000000'][maxlat='89.9990000000']", :count => 1
         assert_select "node", :count => 0
         assert_select "way", :count => 0
         assert_select "relation", :count => 0

@@ -154,8 +154,8 @@ module Api
       create(:tracepoint, :latitude => (0.00004 * GeoRecord::SCALE).to_i, :longitude => (0.00008 * GeoRecord::SCALE).to_i)
 
       get api_tracepoints_path(:bbox => "0,0,0.1,0.1")
-      assert_match(/lat="0.0000400"/, response.body)
-      assert_match(/lon="0.0000800"/, response.body)
+      assert_match(/lat="0.0000400000"/, response.body)
+      assert_match(/lon="0.0000800000"/, response.body)
     end
   end
 end

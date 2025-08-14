@@ -54,16 +54,16 @@ module Api
               assert_dom "tag", 2
               assert_dom "tag[k='highway'][v='crossing']"
               assert_dom "tag[k='crossing'][v='marked']"
-              assert_dom "> @lat", "60.1234500"
-              assert_dom "> @lon", "30.5432100"
+              assert_dom "> @lat", "60.1234500000"
+              assert_dom "> @lon", "30.5432100000"
             end
             assert_dom "node[id='#{old_node2.node_id}']", 1 do
               assert_dom "> @version", "1"
               assert_dom "> @visible", "true"
               assert_dom "tag", 1
               assert_dom "tag[k='highway'][v='traffic_signals']"
-              assert_dom "> @lat", "60.2345600"
-              assert_dom "> @lon", "30.6543200"
+              assert_dom "> @lat", "60.2345600000"
+              assert_dom "> @lon", "30.6543200000"
             end
             assert_dom "way", 1
             assert_dom "way[id='#{old_way.way_id}']", 1 do
@@ -125,16 +125,16 @@ module Api
               assert_dom "tag", 2
               assert_dom "tag[k='highway'][v='crossing']"
               assert_dom "tag[k='crossing'][v='marked']"
-              assert_dom "> @lat", "60.1234500"
-              assert_dom "> @lon", "30.5432100"
+              assert_dom "> @lat", "60.1234500000"
+              assert_dom "> @lon", "30.5432100000"
             end
             assert_dom "node[id='#{old_node2.node_id}']", 1 do
               assert_dom "> @version", "2"
               assert_dom "> @visible", "true"
               assert_dom "tag", 1
               assert_dom "tag[k='highway'][v='traffic_signals']"
-              assert_dom "> @lat", "60.2345600"
-              assert_dom "> @lon", "30.6543200"
+              assert_dom "> @lat", "60.2345600000"
+              assert_dom "> @lon", "30.6543200000"
             end
             assert_dom "way", 1
             assert_dom "way[id='#{old_way.way_id}']", 1 do
