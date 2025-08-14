@@ -3,8 +3,8 @@
 # Table name: notes
 #
 #  id          :bigint           not null, primary key
-#  latitude    :integer          not null
-#  longitude   :integer          not null
+#  latitude    :bigint           not null
+#  longitude   :bigint           not null
 #  tile        :bigint           not null
 #  updated_at  :datetime         not null
 #  created_at  :datetime         not null
