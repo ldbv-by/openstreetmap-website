@@ -235,7 +235,7 @@ CREATE FUNCTION public.api_size_limit(user_id bigint) RETURNS bigint
         size_limit := GREATEST(min_size_limit, LEAST(max_size_limit, size_limit));
       END IF;
 
-      RETURN size_limit;
+      RETURN size_limit * 1000;
     END;
     $$;
 
