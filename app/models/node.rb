@@ -3,8 +3,8 @@
 # Table name: current_nodes
 #
 #  id           :bigint           not null, primary key
-#  latitude     :bigint          not null
-#  longitude    :bigint          not null
+#  latitude     :bigint           not null
+#  longitude    :bigint           not null
 #  changeset_id :bigint           not null
 #  visible      :boolean          not null
 #  timestamp    :datetime         not null

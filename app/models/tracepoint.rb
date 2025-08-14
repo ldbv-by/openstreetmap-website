@@ -4,11 +4,11 @@
 #
 #  altitude  :float
 #  trackid   :integer          not null
-#  latitude  :bigint(8)        not null
-#  longitude :bigint(8)        not null
-#  gpx_id    :bigint(8)        not null
+#  latitude  :bigint           not null
+#  longitude :bigint           not null
+#  gpx_id    :bigint           not null
 #  timestamp :datetime
-#  tile      :bigint(8)
+#  tile      :bigint
 #
 # Indexes
 #

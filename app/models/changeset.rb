@@ -5,10 +5,10 @@
 #  id                     :bigint           not null, primary key
 #  user_id                :bigint           not null
 #  created_at             :datetime         not null
-#  min_lat                :integer
-#  max_lat                :integer
-#  min_lon                :integer
-#  max_lon                :integer
+#  min_lat                :bigint
+#  max_lat                :bigint
+#  min_lon                :bigint
+#  max_lon                :bigint
 #  closed_at              :datetime         not null
 #  num_changes            :integer          default(0), not null
 #  num_created_nodes      :integer          default(0), not null

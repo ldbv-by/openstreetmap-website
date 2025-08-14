@@ -1021,8 +1021,8 @@ CREATE TABLE public.node_tags (
 
 CREATE TABLE public.nodes (
     node_id bigint NOT NULL,
-    latitude integer NOT NULL,
-    longitude integer NOT NULL,
+    latitude bigint NOT NULL,
+    longitude bigint NOT NULL,
     changeset_id bigint NOT NULL,
     visible boolean NOT NULL,
     "timestamp" timestamp without time zone NOT NULL,
@@ -1083,8 +1083,8 @@ CREATE TABLE public.note_subscriptions (
 
 CREATE TABLE public.notes (
     id bigint NOT NULL,
-    latitude integer NOT NULL,
-    longitude integer NOT NULL,
+    latitude bigint NOT NULL,
+    longitude bigint NOT NULL,
     tile bigint NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     created_at timestamp without time zone NOT NULL,
