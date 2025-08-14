@@ -58,21 +58,21 @@ module DatabaseFunctions
 
   API_SIZE_LIMIT = %(
     CREATE OR REPLACE FUNCTION api_size_limit(user_id int8)
-      RETURNS int8
+      RETURNS bigint
       AS $$
     DECLARE
-      min_size_limit int8 := #{Settings.min_size_limit};
-      initial_size_limit int8 := #{Settings.initial_size_limit};
-      max_size_limit int8 := #{Settings.max_size_limit};
+      min_size_limit bigint := #{Settings.min_size_limit};
+      initial_size_limit bigint := #{Settings.initial_size_limit};
+      max_size_limit bigint := #{Settings.max_size_limit};
       days_to_max_size_limit int4 := #{Settings.days_to_max_size_limit};
-      importer_size_limit int8 := #{Settings.importer_size_limit};
-      moderator_size_limit int8 := #{Settings.moderator_size_limit};
+      importer_size_limit bigint := #{Settings.importer_size_limit};
+      moderator_size_limit bigint := #{Settings.moderator_size_limit};
       roles text[];
       last_block timestamp without time zone;
       first_change timestamp without time zone;
       active_reports int4;
       time_since_first_change double precision;
-      size_limit int8;
+      size_limit bigint;
     BEGIN
       SELECT ARRAY_AGG(user_roles.role) INTO STRICT roles FROM user_roles WHERE user_roles.user_id = api_size_limit.user_id;
 

@@ -191,18 +191,18 @@ CREATE FUNCTION public.api_size_limit(user_id bigint) RETURNS bigint
     LANGUAGE plpgsql STABLE
     AS $$
     DECLARE
-      min_size_limit int8 := 10000000;
-      initial_size_limit int8 := 30000000;
-      max_size_limit int8 := 5400000000;
+      min_size_limit bigint := 10000000000;
+      initial_size_limit bigint := 30000000000;
+      max_size_limit bigint := 5400000000000;
       days_to_max_size_limit int4 := 28;
-      importer_size_limit int8 := 5400000000;
-      moderator_size_limit int8 := 5400000000;
+      importer_size_limit bigint := 5400000000000;
+      moderator_size_limit bigint := 5400000000000;
       roles text[];
       last_block timestamp without time zone;
       first_change timestamp without time zone;
       active_reports int4;
       time_since_first_change double precision;
-      size_limit int8;
+      size_limit bigint;
     BEGIN
       SELECT ARRAY_AGG(user_roles.role) INTO STRICT roles FROM user_roles WHERE user_roles.user_id = api_size_limit.user_id;
 
@@ -235,7 +235,7 @@ CREATE FUNCTION public.api_size_limit(user_id bigint) RETURNS bigint
         size_limit := GREATEST(min_size_limit, LEAST(max_size_limit, size_limit));
       END IF;
 
-      RETURN size_limit * 1000;
+      RETURN size_limit;
     END;
     $$;
 
