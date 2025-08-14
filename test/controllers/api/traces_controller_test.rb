@@ -141,8 +141,8 @@ module Api
       # Validate tracepoints
       assert_equal 1, trace.points.size
       tp = trace.points.first
-      assert_equal 10000000, tp.latitude
-      assert_equal 10000000, tp.longitude
+      assert_equal 10000000000, tp.latitude
+      assert_equal 10000000000, tp.longitude
       assert_equal 3221331576, tp.tile
       assert_equal 0, tp.trackid
       assert_in_delta(134.0, tp.altitude)
