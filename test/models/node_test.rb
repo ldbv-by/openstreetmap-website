@@ -55,18 +55,20 @@ class NodeTest < ActiveSupport::TestCase
     assert_includes node.errors.full_messages, "Node is not in the world"
   end
 
-  #def test_lat_lon
-  #  node = build(:node, :latitude => 12.345 * OldNode::SCALE, :longitude => 34.567 * OldNode::SCALE)
+  def test_lat_lon
+    skip "LDBV has higher tolarance"
 
-  #  assert_in_delta 12.345, node.lat, 1.0 / OldNode::SCALE
-  #  assert_in_delta 34.567, node.lon, 1.0 / OldNode::SCALE
+    #node = build(:node, :latitude => 12.345 * OldNode::SCALE, :longitude => 34.567 * OldNode::SCALE)
 
-  #  node.lat = 54.321
-  #  node.lon = 76.543
+    #assert_in_delta 12.345, node.lat, 0.0000001
+    #assert_in_delta 34.567, node.lon, 0.0000001
 
-  #  assert_in_delta 54.321 * OldNode::SCALE, node.latitude, 1
-  #  assert_in_delta 76.543 * OldNode::SCALE, node.longitude, 1
-  #end
+    #node.lat = 54.321
+    #node.lon = 76.543
+
+    #assert_in_delta 54.321 * OldNode::SCALE, node.latitude, 0.000001
+    #assert_in_delta 76.543 * OldNode::SCALE, node.longitude, 0.000001
+  end
 
   # Check that you can create a node and store it
   def test_create
